@@ -902,6 +902,12 @@ footer{background:var(--ink);padding:4rem;border-top:1px solid rgba(250,248,244,
     }
     console.log('CMS load complete. Loaded:', loaded.join(', '));
 
+    // Force all animated elements visible — IntersectionObserver may have missed them
+    // during async CMS load, leaving them at opacity:0
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.fade-up, .fade-left').forEach(el => el.classList.add('visible'));
+    });
+
     // HERO
     if(data.hero) {
       const h = data.hero;
