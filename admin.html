@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Site Admin — Spurgeon Thomas Jr</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#111318;--paper:#faf8f4;--cream:#f0ece3;--gold:#b8924a;--gold-light:#d4ac6a;--gold-pale:#f5ead6;--teal:#1e3d4f;--mid:#6e6b65;--soft:#9e9b95;--rule:#ddd8ce;--red:#a03030;--green:#2d6a4f;--shadow:0 4px 24px rgba(17,19,24,.08);--t:all .25s cubic-bezier(.4,0,.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh}
+#login-screen{position:fixed;inset:0;background:var(--teal);display:flex;align-items:center;justify-content:center;z-index:1000;transition:opacity .4s ease}
+#login-screen.hidden{opacity:0;pointer-events:none}
+.login-box{background:var(--paper);padding:3rem;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.3)}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;margin-bottom:.25rem}
+.login-logo span{color:var(--gold);font-style:italic}
+.login-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--soft);margin-bottom:2.5rem}
+.login-box label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:.4rem}
+.login-box input{width:100%;padding:.85rem 1rem;border:1px solid var(--rule);background:var(--cream);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:var(--t);margin-bottom:1rem}
+.login-box input:focus{border-color:var(--gold);background:white}
+.login-btn{width:100%;padding:.85rem;background:var(--teal);color:var(--paper);border:none;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:var(--t);margin-top:.5rem}
+.login-btn:hover{background:var(--gold)}
+.login-error{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--red);margin-top:.75rem;display:none;letter-spacing:.04em}
+.admin-wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--ink);padding:2rem 1.5rem;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--paper)}
+.sidebar-logo span{color:var(--gold);font-style:italic}
+.sidebar-sub{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,248,244,.28);margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(250,248,244,.08)}
+.sidebar-section{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,248,244,.25);margin-bottom:.75rem;margin-top:1.5rem}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.06em;color:rgba(250,248,244,.45);text-decoration:none;cursor:pointer;transition:var(--t);border-left:2px solid transparent;margin-bottom:2px}
+.nav-item:hover{color:var(--paper);background:rgba(250,248,244,.04)}
+.nav-item.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(184,146,74,.06)}
+.nav-item .ico{font-size:.9rem;width:18px;text-align:center}
+.sidebar-footer{margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(250,248,244,.08)}
+.sidebar-status{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:rgba(250,248,244,.25);letter-spacing:.06em;line-height:1.8}
+.logout-btn{width:100%;padding:.6rem;background:rgba(250,248,244,.04);color:rgba(250,248,244,.35);border:1px solid rgba(250,248,244,.08);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:var(--t);margin-top:.75rem}
+.logout-btn:hover{background:rgba(168,50,50,.2);color:#f4a0a0;border-color:rgba(168,50,50,.3)}
+.main-content{padding:2.5rem;overflow-y:auto}
+.panel{display:none}.panel.active{display:block}
+.panel-header{margin-bottom:2rem}
+.panel-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem}
+.panel-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold)}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;margin-bottom:.4rem}
+.panel-desc{font-size:.875rem;color:var(--mid);line-height:1.7}
+#toast{position:fixed;bottom:2rem;right:2rem;padding:.85rem 1.5rem;background:var(--teal);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.06em;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s ease;pointer-events:none;max-width:340px;border-left:3px solid var(--gold)}
+#toast.show{opacity:1;transform:none}
+#toast.error{background:var(--red);border-left-color:#ffaaaa}
+.save-bar{position:sticky;top:0;z-index:10;background:rgba(250,248,244,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:.85rem 0;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between}
+.save-bar-info{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--soft);letter-spacing:.04em}
+.save-bar-info span{color:var(--gold);font-weight:500}
+.btn{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.65rem 1.5rem;cursor:pointer;transition:var(--t);border:none;display:inline-flex;align-items:center;gap:.5rem}
+.btn-save{background:var(--teal);color:var(--paper)}.btn-save:hover{background:var(--gold)}.btn-save:disabled{background:var(--soft);cursor:not-allowed}
+.btn-add{background:var(--gold-pale);color:var(--gold);border:1px solid rgba(184,146,74,.3)}.btn-add:hover{background:var(--gold);color:white}
+.btn-danger{background:#fdf0f0;color:var(--red);border:1px solid #e8b4b4}.btn-danger:hover{background:var(--red);color:white}
+.btn-sm{padding:.4rem .9rem;font-size:.58rem}
+.btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--rule)}.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.card{background:white;border:1px solid var(--rule);padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--rule)}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600}
+.card-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;background:var(--cream);color:var(--soft);border:1px solid var(--rule)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:.38rem;margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+.field label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:.4rem}
+.field-hint{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--soft);letter-spacing:.04em;text-transform:none}
+.field input,.field textarea,.field select{font-family:'Inter',sans-serif;font-size:.875rem;padding:.72rem 1rem;border:1px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;transition:var(--t);font-weight:300;resize:vertical;width:100%}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold);background:white;box-shadow:0 0 0 3px rgba(184,146,74,.08)}
+.field input::placeholder,.field textarea::placeholder{color:var(--soft);font-size:.82rem}
+.field-row{display:flex;gap:1rem;align-items:flex-end}
+.field-row .field{flex:1;margin-bottom:0}
+.stats-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.stat-card{background:var(--teal);padding:1.5rem}
+.stat-card-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,248,244,.4);margin-bottom:.75rem}
+.stat-card .field input{background:rgba(250,248,244,.08);border-color:rgba(250,248,244,.15);color:var(--paper);font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600}
+.stat-card .field input:focus{background:rgba(250,248,244,.12);border-color:var(--gold)}
+.stat-card .field label{color:rgba(250,248,244,.4)}
+.accordion-item{border:1px solid var(--rule);margin-bottom:.75rem;background:white}
+.accordion-header{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.5rem;cursor:pointer;transition:background .2s;user-select:none}
+.accordion-header:hover{background:var(--cream)}
+.accordion-header-left{display:flex;align-items:center;gap:1rem}
+.accordion-index{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--gold);letter-spacing:.06em;width:24px}
+.accordion-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600}
+.accordion-meta{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--soft);letter-spacing:.04em;margin-top:.15rem}
+.accordion-actions{display:flex;gap:.5rem;align-items:center}
+.accordion-chevron{font-size:.65rem;color:var(--soft);transition:transform .25s}
+.accordion-chevron.open{transform:rotate(180deg)}
+.accordion-body{display:none;padding:1.5rem;border-top:1px solid var(--rule);background:var(--paper)}
+.accordion-body.open{display:block}
+.section-divide{display:flex;align-items:center;gap:1rem;margin:2rem 0 1.2rem}
+.section-divide-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);white-space:nowrap}
+.section-divide-line{flex:1;height:1px;background:var(--rule)}
+.preview-link{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:var(--teal);text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;transition:var(--t);padding:.35rem .75rem;border:1px solid rgba(30,61,79,.2);white-space:nowrap}
+.preview-link:hover{background:var(--teal);color:var(--paper)}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.dash-stat{background:white;border:1px solid var(--rule);padding:1.5rem;box-shadow:var(--shadow)}
+.dash-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:600;color:var(--teal);line-height:1}
+.dash-stat-label{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-top:.3rem}
+.dash-activity{background:white;border:1px solid var(--rule);padding:2rem;box-shadow:var(--shadow)}
+.dash-activity-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:1.2rem;padding-bottom:.75rem;border-bottom:1px solid var(--rule)}
+.activity-item{display:flex;align-items:flex-start;gap:.85rem;padding:.75rem 0;border-bottom:1px solid var(--rule)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem}
+.activity-text{font-size:.82rem;color:var(--mid);line-height:1.5}
+.activity-text strong{color:var(--ink);font-weight:500}
+.activity-time{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--soft);margin-top:.2rem}
+.instructions-box{background:var(--gold-pale);border:1px solid rgba(184,146,74,.25);border-left:3px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
+.instructions-box h4{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;margin-bottom:.75rem;color:var(--teal)}
+.instructions-box ol{list-style:decimal;padding-left:1.2rem}
+.instructions-box li{font-size:.85rem;color:var(--mid);line-height:1.7;margin-bottom:.3rem}
+.instructions-box li strong{color:var(--ink);font-weight:500}
+.instructions-box code{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:rgba(184,146,74,.12);padding:.1rem .35rem;color:var(--teal)}
+@media(max-width:900px){
+  .admin-wrap{grid-template-columns:1fr}
+  .sidebar{height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:1rem;padding:1rem 1.5rem}
+  .sidebar-sub,.sidebar-section,.sidebar-footer{display:none}
+  .main-content{padding:1.5rem}
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .form-grid,.form-grid-3,.stats-edit-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Spurgeon <span>Thomas Jr</span></div>
+    <div class="login-sub">Site Administration</div>
+    <label>Password</label>
+    <input type="password" id="login-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ADMIN APP -->
+<div class="admin-wrap" id="admin-app" style="display:none">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-logo">Spurgeon <span>Thomas Jr</span></div>
+      <div class="sidebar-sub">CMS Admin Panel</div>
+      <div class="sidebar-section">Content</div>
+      <div class="nav-item active" onclick="showPanel('dashboard')" id="nav-dashboard"><span class="ico">◈</span>Dashboard</div>
+      <div class="nav-item" onclick="showPanel('hero')" id="nav-hero"><span class="ico">⬡</span>Hero & Stats</div>
+      <div class="nav-item" onclick="showPanel('valueprops')" id="nav-valueprops"><span class="ico">▣</span>Value Props</div>
+      <div class="nav-item" onclick="showPanel('timeline')" id="nav-timeline"><span class="ico">◎</span>Career Timeline</div>
+      <div class="nav-item" onclick="showPanel('artifacts')" id="nav-artifacts"><span class="ico">📁</span>Artifacts</div>
+      <div class="nav-item" onclick="showPanel('casestudies')" id="nav-casestudies"><span class="ico">📋</span>Case Studies</div>
+      <div class="nav-item" onclick="showPanel('testimonials')" id="nav-testimonials"><span class="ico">💬</span>Testimonials</div>
+      <div class="sidebar-section">Site</div>
+      <div class="nav-item" onclick="showPanel('settings')" id="nav-settings"><span class="ico">⚙</span>Settings</div>
+      <a class="nav-item" href="spurgeon-thomas-portfolio.html" target="_blank"><span class="ico">↗</span>View Live Site</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-status" id="fb-status-sidebar">Connecting…</div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Overview</span></div>
+        <h1 class="panel-title">Dashboard</h1>
+        <p class="panel-desc">Welcome back. All site content is managed from here — no code required.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-stat"><div class="dash-stat-num" id="d-artifacts">—</div><div class="dash-stat-label">Artifacts</div></div>
+        <div class="dash-stat"><div class="dash-stat-num" id="d-casestudies">—</div><div class="dash-stat-label">Case Studies</div></div>
+        <div class="dash-stat"><div class="dash-stat-num" id="d-testimonials">—</div><div class="dash-stat-label">Testimonials</div></div>
+        <div class="dash-stat"><div class="dash-stat-num" id="d-messages">—</div><div class="dash-stat-label">Contact Messages</div></div>
+      </div>
+      <div class="instructions-box">
+        <h4>How to update your live site</h4>
+        <ol>
+          <li>Pick a section in the <strong>sidebar</strong> (Hero, Value Props, Timeline, etc.)</li>
+          <li>Edit the fields — content is pre-filled from your current site</li>
+          <li>Click <strong>Save Changes</strong> — your live site updates <strong>instantly</strong>, no redeploy needed</li>
+          <li>For artifact files: <strong>upload to GitHub first</strong>, then paste the raw URL in the Artifacts section</li>
+        </ol>
+      </div>
+      <div class="dash-activity">
+        <div class="dash-activity-title">Quick Start Checklist</div>
+        <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text"><strong>Upload artifact files to GitHub</strong> — go to github.com/spurgeonthomas/Systematicinstitute → Add file → Upload</div><div class="activity-time">Format: https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/YOUR-FILE.pdf</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--teal)"></div><div><div class="activity-text"><strong>Change your admin password</strong> in Settings before publishing</div><div class="activity-time">Default: Systematic2026! — stored in your browser localStorage</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--soft)"></div><div><div class="activity-text"><strong>Save each section once</strong> to push defaults into Firestore, then edit from there</div><div class="activity-time">Tip: open each panel, click Save — this seeds the database with your current content</div></div></div>
+      </div>
+    </div>
+
+    <!-- HERO & STATS -->
+    <div class="panel" id="panel-hero">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Hero Section</span></div>
+        <h1 class="panel-title">Hero & Stats</h1>
+        <p class="panel-desc">Edit your headline, description paragraph, and the four statistics shown on the hero panel.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Hero & Stats</span></span>
+        <button class="btn btn-save" id="save-hero" onclick="saveHero()">Save Changes</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hero Copy</div><div class="card-badge">Top of page</div></div>
+        <div class="field"><label>Eyebrow Text <span class="field-hint">small label above the headline</span></label><input type="text" id="h-eyebrow" placeholder="Senior Business Systems Analyst · Consultant"/></div>
+        <div class="field"><label>Headline — Line 1</label><input type="text" id="h-line1" placeholder="Turning complexity"/></div>
+        <div class="field"><label>Headline — Line 2 <span class="field-hint">italic gold text</span></label><input type="text" id="h-line2" placeholder="into clarity —"/></div>
+        <div class="field"><label>Headline — Line 3 <span class="field-hint">bold text</span></label><input type="text" id="h-line3" placeholder="and clarity into results."/></div>
+        <div class="field"><label>Description Paragraph</label><textarea id="h-desc" rows="3" placeholder="For over 25 years…"></textarea></div>
+      </div>
+      <div class="section-divide"><div class="section-divide-line"></div><div class="section-divide-label">Hero Statistics (4 blocks)</div><div class="section-divide-line"></div></div>
+      <div class="stats-edit-grid">
+        <div class="stat-card"><div class="stat-card-label">Stat 1 — Top Left</div><div class="field"><label>Number</label><input type="text" id="sn1" placeholder="25+"/></div><div class="field"><label>Label</label><input type="text" id="sl1" placeholder="Years of BA Excellence"/></div></div>
+        <div class="stat-card"><div class="stat-card-label">Stat 2 — Top Right</div><div class="field"><label>Number</label><input type="text" id="sn2" placeholder="60+"/></div><div class="field"><label>Label</label><input type="text" id="sl2" placeholder="Projects Delivered"/></div></div>
+        <div class="stat-card"><div class="stat-card-label">Stat 3 — Bottom Left</div><div class="field"><label>Number</label><input type="text" id="sn3" placeholder="8"/></div><div class="field"><label>Label</label><input type="text" id="sl3" placeholder="Industries Served"/></div></div>
+        <div class="stat-card"><div class="stat-card-label">Stat 4 — Bottom Right</div><div class="field"><label>Number</label><input type="text" id="sn4" placeholder="$2M+"/></div><div class="field"><label>Label</label><input type="text" id="sl4" placeholder="Documented Cost Savings"/></div></div>
+      </div>
+    </div>
+
+    <!-- VALUE PROPS -->
+    <div class="panel" id="panel-valueprops">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Dark Banner Section</span></div>
+        <h1 class="panel-title">Value Props</h1>
+        <p class="panel-desc">The three dark blocks beneath the hero — "What I Bring To Every Engagement".</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Value Props</span></span>
+        <button class="btn btn-save" id="save-valueprops" onclick="saveValueProps()">Save Changes</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Value Prop 01</div></div>
+        <div class="field"><label>Title</label><input type="text" id="vp1-title" placeholder="Requirements Excellence"/></div>
+        <div class="field"><label>Description</label><textarea id="vp1-desc" rows="3" placeholder="I don't just document what stakeholders say…"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Value Prop 02</div></div>
+        <div class="field"><label>Title</label><input type="text" id="vp2-title" placeholder="Process Intelligence"/></div>
+        <div class="field"><label>Description</label><textarea id="vp2-desc" rows="3" placeholder="Every inefficiency is a story waiting to be told…"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Value Prop 03</div></div>
+        <div class="field"><label>Title</label><input type="text" id="vp3-title" placeholder="Delivery Transformation"/></div>
+        <div class="field"><label>Description</label><textarea id="vp3-desc" rows="3" placeholder="Agile, SAFe, or hybrid…"></textarea></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="panel" id="panel-timeline">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Career Progression</span></div>
+        <h1 class="panel-title">Career Timeline</h1>
+        <p class="panel-desc">Edit your four career milestones. Each entry appears as a point on the timeline.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Career Timeline</span></span>
+        <button class="btn btn-save" id="save-timeline" onclick="saveTimeline()">Save Changes</button>
+      </div>
+      <div id="timeline-list"></div>
+    </div>
+
+    <!-- ARTIFACTS -->
+    <div class="panel" id="panel-artifacts">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Artifact Repository</span></div>
+        <h1 class="panel-title">Artifacts</h1>
+        <p class="panel-desc">Manage downloadable BA artifacts. Upload files to GitHub first, then paste the raw URL.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Artifacts</span></span>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn btn-add" onclick="addArtifact()">+ Add Artifact</button>
+          <button class="btn btn-save" id="save-artifacts" onclick="saveArtifacts()">Save All</button>
+        </div>
+      </div>
+      <div class="instructions-box">
+        <h4>How to get your GitHub download URLs</h4>
+        <ol>
+          <li>Go to <strong>github.com/spurgeonthomas/Systematicinstitute</strong></li>
+          <li>Click <strong>Add file → Upload files</strong> and upload your PDF or XLSX</li>
+          <li>Raw URL format: <code>https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/YOUR-FILE.pdf</code></li>
+          <li>Paste into the Download URL field below, then click <strong>Save All</strong></li>
+        </ol>
+      </div>
+      <div id="artifacts-list"></div>
+    </div>
+
+    <!-- CASE STUDIES -->
+    <div class="panel" id="panel-casestudies">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Selected Work</span></div>
+        <h1 class="panel-title">Case Studies</h1>
+        <p class="panel-desc">Edit all four case studies — card display, modal metrics, and full body text.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Case Studies</span></span>
+        <button class="btn btn-save" id="save-casestudies" onclick="saveCaseStudies()">Save All</button>
+      </div>
+      <div id="casestudies-list"></div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="panel" id="panel-testimonials">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Client Voices</span></div>
+        <h1 class="panel-title">Testimonials</h1>
+        <p class="panel-desc">Edit client testimonials shown in the Testimonials section.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Testimonials</span></span>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn btn-add" onclick="addTestimonial()">+ Add</button>
+          <button class="btn btn-save" id="save-testimonials" onclick="saveTestimonials()">Save All</button>
+        </div>
+      </div>
+      <div id="testimonials-list"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Configuration</span></div>
+        <h1 class="panel-title">Settings</h1>
+        <p class="panel-desc">Update contact details, links, and your admin password.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Settings & Links</span></span>
+        <button class="btn btn-save" id="save-settings" onclick="saveSettings()">Save Settings</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Contact & Social Links</div></div>
+        <div class="form-grid">
+          <div class="field"><label>Email Address</label><input type="email" id="s-email" placeholder="Spurgeon.Thomas@gmail.com"/></div>
+          <div class="field"><label>LinkedIn URL</label><input type="url" id="s-linkedin"/></div>
+          <div class="field"><label>GitHub URL</label><input type="url" id="s-github"/></div>
+          <div class="field"><label>Calendly URL</label><input type="url" id="s-calendly"/></div>
+          <div class="field form-full"><label>Resume PDF URL</label><input type="url" id="s-resume"/></div>
+          <div class="field form-full"><label>Availability Note</label><input type="text" id="s-availability" placeholder="Currently accepting new consulting engagements."/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Change Admin Password</div><div class="card-badge">Security</div></div>
+        <div class="form-grid">
+          <div class="field"><label>New Password</label><input type="password" id="s-pw1" placeholder="At least 8 characters"/></div>
+          <div class="field"><label>Confirm Password</label><input type="password" id="s-pw2"/></div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:1rem" onclick="changePassword()">Update Password</button>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--soft);margin-top:.75rem;letter-spacing:.04em">⚠ Password stored in browser localStorage. Change it before making this page public.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script type="module">
+// ── Single self-contained ES module — no window.__ bridging needed ──
+import { initializeApp }    from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
+                             from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const FB_CFG = {
+  apiKey:            "AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
+  authDomain:        "systematic-institute.firebaseapp.com",
+  projectId:         "systematic-institute",
+  storageBucket:     "systematic-institute.firebasestorage.app",
+  messagingSenderId: "663014267999",
+  appId:             "1:663014267999:web:7d5b24c3729c2edabe8fea",
+  measurementId:     "G-W7REQ9PGRZ"
+};
+
+// ── DEFAULTS ──
+const DEFAULTS = {
+  hero: {
+    eyebrow:'Senior Business Systems Analyst · Consultant',
+    line1:'Turning complexity', line2:'into clarity —', line3:'and clarity into results.',
+    desc:"For over 25 years, I've helped organizations bridge the gap between what the business needs and what technology delivers — through precise requirements, structured analysis, and human-centered delivery.",
+    sn1:'25+',sl1:'Years of BA Excellence', sn2:'60+',sl2:'Projects Delivered',
+    sn3:'8',sl3:'Industries Served', sn4:'$2M+',sl4:'Documented Cost Savings'
+  },
+  valueprops: [
+    { num:'01', title:'Requirements Excellence', desc:"I don't just document what stakeholders say — I uncover what they mean, resolve what they've overlooked, and produce requirements that development teams can actually build from. Traceable from vision to validation." },
+    { num:'02', title:'Process Intelligence',    desc:"Every inefficiency is a story waiting to be told. Using BPMN 2.0, value stream mapping, and root-cause analysis, I surface the hidden costs in your workflows and design future-state blueprints that actually stick." },
+    { num:'03', title:'Delivery Transformation', desc:"Agile, SAFe, or hybrid — I align delivery methodology to your culture and maturity. My track record is measured in outcomes: faster velocity, less rework, and stakeholders who trust the process." }
+  ],
+  timeline: [
+    { date:'2021 – Present', role:'Principal Business Systems Analyst', company:'FinTech Innovations Corp · Financial Services', desc:'Led enterprise-wide CRM transformation program. Elicited and managed 600+ requirements across 12 stakeholder groups. Delivered 40% reduction in manual processing through automated workflow design.', highlights:'600+ Requirements,40% Process Reduction,$800K Cost Avoidance' },
+    { date:'2018 – 2021',    role:'Senior Business Analyst',           company:'Government Digital Services · Public Sector',    desc:'Defined system integration strategy for a multi-agency data exchange platform. Facilitated 80+ stakeholder workshops, produced context diagrams and BPMN flows approved by the architecture board.', highlights:'5 Agencies Integrated,80+ Workshops,$1.2M Savings' },
+    { date:'2015 – 2018',    role:'Business Analyst II',               company:'Regional Health Systems · Healthcare',          desc:'Requirements lead on EHR implementation impacting 4,000+ clinicians across 14 departments. Maintained traceability across 900 functional and non-functional requirements.', highlights:'4,000+ Clinicians,900 Requirements,Zero Critical Defects' },
+    { date:'2013 – 2015',    role:'Business Analyst',                  company:'Enterprise Solutions Group · Consulting',       desc:'Supported discovery and documentation across ERP, HRIS, and supply chain engagements. Built foundational competencies in stakeholder elicitation and Agile user story writing.', highlights:'ERP,HRIS,Supply Chain' }
+  ],
+  artifacts: [
+    { id:'a1', category:'Requirements',    title:'Business Requirements Document (BRD)',    desc:'Full-scope BRD with stakeholder register, business objectives, scope boundaries, assumptions, constraints, and functional requirement catalog.', format:'PDF · 28 pages', url:'' },
+    { id:'a2', category:'Requirements',    title:'Requirements Traceability Matrix (RTM)',  desc:'End-to-end traceability from business objectives through functional requirements, test cases, and defects.', format:'XLSX · Interactive', url:'' },
+    { id:'a3', category:'Requirements',    title:'Functional Requirements Document (FRD)',  desc:'Detailed FRD with use case specifications and non-functional requirements annex.', format:'PDF · 45 pages', url:'' },
+    { id:'a4', category:'Process Modeling',title:'BPMN 2.0 Swimlane Diagram Set',          desc:'As-is and to-be process models with exception flows and sub-process callouts.', format:'PNG / PDF · Miro Export', url:'' },
+    { id:'a5', category:'Process Modeling',title:'System Context Diagram',                 desc:'Level-0 DFD for a multi-system integration environment.', format:'PNG · Lucidchart Export', url:'' },
+    { id:'a6', category:'Process Modeling',title:'Value Stream Map',                       desc:'Current and future state VSM for a claims processing operation.', format:'PDF · Visio Export', url:'' },
+    { id:'a7', category:'Data Analysis',   title:'Entity-Relationship Diagram (ERD)',      desc:'Logical data model with entity definitions and cardinality notations.', format:'PNG · DB Schema', url:'' },
+    { id:'a8', category:'Data Analysis',   title:'Data Dictionary & Glossary',             desc:'200+ data elements with definitions, ownership, and source system.', format:'XLSX · 200+ Entries', url:'' },
+    { id:'a9', category:'Agile Delivery',  title:'User Story Set with Acceptance Criteria',desc:'Epic-to-story decomposition with Given-When-Then criteria.', format:'Confluence Export · PDF', url:'' },
+    { id:'a10',category:'Agile Delivery',  title:'Agile BA Playbook',                      desc:'BA activities, story writing standards, and DoR/DoD templates.', format:'PDF · 22 pages', url:'' },
+    { id:'a11',category:'Governance',      title:'Business Case Document',                 desc:'Options analysis, cost-benefit analysis, and risk register.', format:'PDF · 18 pages', url:'' },
+    { id:'a12',category:'Governance',      title:'Project Retrospective Report',           desc:'Root cause analysis and improvement action plan.', format:'PDF · 12 pages', url:'' }
+  ],
+  casestudies: [
+    { id:'cs1',industry:'Financial Services · CRM Transformation',title:'Enterprise CRM Modernization — Requirements Program',impact:'40% reduction in manual processing · $800K annual cost avoidance · on-time delivery',tags:'BRD,BPMN,Stakeholder Mgmt,SAFe,RTM',m1_val:'40%',m1_label:'Manual Process Reduction',m2_val:'$800K',m2_label:'Annual Cost Avoidance',m3_val:'600+',m3_label:'Requirements Managed',problem:'A mid-size financial services firm operating on a fragmented CRM ecosystem across 4 business units.',approach:'3-week discovery sprint with 12 stakeholder groups using CATWOE analysis and SIPOC frameworks.',techniques:'Stakeholder interviews · CATWOE · SIPOC · BPMN 2.0 · Gap analysis · MoSCoW · RTM · UAT',outcome:'System went live on schedule with 40% reduction in manual data entry and $800K documented cost avoidance.' },
+    { id:'cs2',industry:'Public Sector · Data Integration',title:'Multi-Agency Data Exchange Platform',impact:'$1.2M identified savings · 60% faster inter-agency reporting · 5 agencies unified',tags:'Context Diagram,Integration Analysis,Workshop Facilitation,ICD',m1_val:'$1.2M',m1_label:'Savings Identified',m2_val:'60%',m2_label:'Faster Reporting',m3_val:'5',m3_label:'Agencies Integrated',problem:'Five government agencies exchanging sensitive data through manual email-based processes.',approach:'Context diagrams, DFDs, ERDs. 80+ workshops across agencies. Data governance charter.',techniques:'Context diagrams · DFDs · ERDs · ICD · Data governance · BPMN',outcome:'60% improvement in inter-agency reporting speed and $1.2M in identified savings.' },
+    { id:'cs3',industry:'Healthcare · EHR Implementation',title:'Clinical Workflow Redesign for EHR Rollout',impact:'4,000+ clinicians onboarded · Zero critical post-go-live defects · 45% fewer change requests',tags:'Data Mapping,ICD,UAT,RTM,HL7',m1_val:'4K+',m1_label:'Clinicians Onboarded',m2_val:'900',m2_label:'Requirements Traced',m3_val:'Zero',m3_label:'Critical Post-Go-Live Defects',problem:'Regional health system replacing legacy clinical system affecting 14 departments and 4,000+ staff.',approach:'Departmental workflow workshops. 900-item RTM aligned to HL7 and regulatory requirements.',techniques:'Workflow workshops · Data mapping · ICD · RTM · UAT scripting · HL7',outcome:'Go-live on schedule with zero critical defects and 45% reduction in change requests.' },
+    { id:'cs4',industry:'Retail · Agile Transformation',title:'Agile Operating Model Adoption',impact:'35% velocity improvement · 50% reduction in backlog ambiguity · 6 teams transformed',tags:'Scrum,Backlog Refinement,Story Mapping,DoR / DoD',m1_val:'35%',m1_label:'Velocity Improvement',m2_val:'50%',m2_label:'Less Backlog Ambiguity',m3_val:'6',m3_label:'Teams Transformed',problem:'Six product teams under Waterfall with no backlog hygiene and frequent mid-sprint scope changes.',approach:'Story mapping workshops, DoR/DoD frameworks, and Given-When-Then criteria templates.',techniques:'Story mapping · DoR · DoD · Given-When-Then · Agile BA Playbook · Training',outcome:'35% velocity improvement and 50% backlog ambiguity reduction within two quarters.' }
+  ],
+  testimonials: [
+    { id:'t1',quote:"Spurgeon brought structure to a deeply ambiguous transformation programme. The BRD and RTM they produced became the north star for our entire delivery team.",author:'Programme Director',role:'Financial Services · CRM Transformation' },
+    { id:'t2',quote:"The BPMN models were the clearest process documentation our architecture board had seen. They became the standard template we use across all future programmes.",author:'Chief Architect',role:'Government Digital Services' },
+    { id:'t3',quote:"Zero critical defects post go-live. That doesn't happen without rigorous requirements management. Spurgeon's traceability work was exceptional.",author:'VP of Technology',role:'Regional Health Systems' }
+  ],
+  settings: {
+    email:'Spurgeon.Thomas@gmail.com', linkedin:'https://linkedin.com/in/spurgeonthomas',
+    github:'https://github.com/spurgeonthomas/Systematicinstitute',
+    calendly:'https://calendly.com/spurgeon-thomas/15min',
+    resume:'https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/Spurgeon%20Thomas%20-%20Master%20Resume%20.pdf',
+    availability:'Currently accepting new consulting engagements.'
+  }
+};
+
+// ── STATE ──
+const STATE = JSON.parse(JSON.stringify(DEFAULTS));
+
+// ── FIREBASE ──
+let db;
+try {
+  const app = initializeApp(FB_CFG);
+  db = getFirestore(app);
+  const el = document.getElementById('fb-status-sidebar');
+  if(el){ el.textContent='● Firebase Connected'; el.style.color='#6fcf97'; }
+} catch(e) {
+  const el = document.getElementById('fb-status-sidebar');
+  if(el){ el.textContent='● Firebase Error: '+e.message; el.style.color='#f4a0a0'; }
+  console.error('Firebase init:', e);
+}
+
+// ── TOAST ──
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (isError?' error':'');
+  clearTimeout(t._tmr);
+  t._tmr = setTimeout(()=>t.className='', 3800);
+}
+
+// ── AUTH ──
+function doLogin() {
+  const pw = document.getElementById('login-pw').value;
+  const stored = localStorage.getItem('admin_pw') || 'Systematic2026!';
+  if(pw === stored) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-app').style.display = 'grid';
+    setTimeout(()=>{ const s=document.getElementById('login-screen'); if(s) s.remove(); }, 500);
+    initAdmin();
+  } else {
+    const err = document.getElementById('login-error');
+    err.style.display='block';
+    document.getElementById('login-pw').value='';
+    setTimeout(()=>err.style.display='none', 3000);
+  }
+}
+function doLogout(){ location.reload(); }
+function changePassword() {
+  const p1=document.getElementById('s-pw1').value, p2=document.getElementById('s-pw2').value;
+  if(!p1){showToast('Enter a new password',true);return;}
+  if(p1!==p2){showToast('Passwords do not match',true);return;}
+  if(p1.length<8){showToast('Must be at least 8 characters',true);return;}
+  localStorage.setItem('admin_pw',p1);
+  document.getElementById('s-pw1').value=''; document.getElementById('s-pw2').value='';
+  showToast('✓ Password updated');
+}
+
+// ── PANELS ──
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const nav=document.getElementById('nav-'+id); if(nav) nav.classList.add('active');
+}
+
+// ── ACCORDION ──
+function toggleAccordion(bodyId, chevId) {
+  const b=document.getElementById(bodyId), c=document.getElementById(chevId);
+  if(b){ b.classList.toggle('open'); if(c) c.classList.toggle('open'); }
+}
+
+// ── FORM POPULATION ──
+function populateHero(h) {
+  const d=DEFAULTS.hero;
+  ['eyebrow','line1','line2','line3','desc'].forEach(k=>{
+    const el=document.getElementById('h-'+k); if(el) el.value=h[k]||d[k]||'';
+  });
+  for(let i=1;i<=4;i++){
+    const en=document.getElementById('sn'+i), el=document.getElementById('sl'+i);
+    if(en) en.value=h['sn'+i]||d['sn'+i]||'';
+    if(el) el.value=h['sl'+i]||d['sl'+i]||'';
+  }
+}
+function populateValueProps(vps) {
+  for(let i=0;i<3;i++){
+    const v=vps[i]||{}, d=DEFAULTS.valueprops[i]||{};
+    const t=document.getElementById('vp'+(i+1)+'-title'), desc=document.getElementById('vp'+(i+1)+'-desc');
+    if(t) t.value=v.title||d.title||'';
+    if(desc) desc.value=v.desc||d.desc||'';
+  }
+}
+function populateSettings(s) {
+  const d=DEFAULTS.settings;
+  ['email','linkedin','github','calendly','resume','availability'].forEach(k=>{
+    const el=document.getElementById('s-'+k); if(el) el.value=s[k]||d[k]||'';
+  });
+}
+
+// ── RENDERS ──
+function renderTimeline(tl) {
+  const list=document.getElementById('timeline-list'); if(!list) return;
+  list.innerHTML=tl.map((t,i)=>`
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('tl-body-${i}','tl-chev-${i}')">
+        <div class="accordion-header-left">
+          <span class="accordion-index">${String(i+1).padStart(2,'0')}</span>
+          <div><div class="accordion-name">${t.role||'Role'}</div><div class="accordion-meta">${t.date||''} · ${t.company||''}</div></div>
+        </div>
+        <span class="accordion-chevron" id="tl-chev-${i}">▼</span>
+      </div>
+      <div class="accordion-body" id="tl-body-${i}">
+        <div class="form-grid">
+          <div class="field"><label>Date Range</label><input type="text" value="${t.date||''}" onchange="STATE.timeline[${i}].date=this.value" placeholder="2021 – Present"/></div>
+          <div class="field"><label>Role / Title</label><input type="text" value="${t.role||''}" onchange="STATE.timeline[${i}].role=this.value"/></div>
+          <div class="field form-full"><label>Company · Industry</label><input type="text" value="${t.company||''}" onchange="STATE.timeline[${i}].company=this.value"/></div>
+          <div class="field form-full"><label>Description</label><textarea rows="3" onchange="STATE.timeline[${i}].desc=this.value">${t.desc||''}</textarea></div>
+          <div class="field form-full"><label>Highlight Tags <span class="field-hint">comma separated</span></label><input type="text" value="${t.highlights||''}" onchange="STATE.timeline[${i}].highlights=this.value"/></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function renderArtifacts(arts) {
+  const list=document.getElementById('artifacts-list'); if(!list) return;
+  list.innerHTML=arts.map((a,i)=>`
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('ab-${i}','ac-${i}')">
+        <div class="accordion-header-left">
+          <span class="accordion-index">${String(i+1).padStart(2,'0')}</span>
+          <div><div class="accordion-name">${a.title||'Untitled'}</div><div class="accordion-meta">${a.category||''} ${a.url?'· ✓ URL set':'· ⚠ No URL yet'}</div></div>
+        </div>
+        <div class="accordion-actions">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();removeArtifact(${i})">Remove</button>
+          <span class="accordion-chevron" id="ac-${i}">▼</span>
+        </div>
+      </div>
+      <div class="accordion-body" id="ab-${i}">
+        <div class="form-grid">
+          <div class="field"><label>Category</label>
+            <select onchange="STATE.artifacts[${i}].category=this.value">
+              ${['Requirements','Process Modeling','Data Analysis','Agile Delivery','Governance'].map(c=>`<option${a.category===c?' selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Format</label><input type="text" value="${a.format||''}" onchange="STATE.artifacts[${i}].format=this.value"/></div>
+          <div class="field form-full"><label>Title</label><input type="text" value="${a.title||''}" onchange="STATE.artifacts[${i}].title=this.value"/></div>
+          <div class="field form-full"><label>Description</label><textarea rows="2" onchange="STATE.artifacts[${i}].desc=this.value">${a.desc||''}</textarea></div>
+          <div class="field form-full">
+            <label>Download URL</label>
+            <div style="display:flex;gap:.75rem;align-items:center">
+              <input type="url" value="${a.url||''}" placeholder="https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/..." onchange="STATE.artifacts[${i}].url=this.value" style="flex:1;padding:.72rem 1rem;border:1px solid var(--rule);background:var(--paper);font-size:.875rem;outline:none;font-family:'Inter',sans-serif"/>
+              ${a.url?`<a href="${a.url}" target="_blank" class="preview-link">Test ↗</a>`:''}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function renderCaseStudies(cs) {
+  const list=document.getElementById('casestudies-list'); if(!list) return;
+  list.innerHTML=cs.map((c,i)=>`
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('cb-${i}','cc-${i}')">
+        <div class="accordion-header-left">
+          <span class="accordion-index">${String(i+1).padStart(2,'0')}</span>
+          <div><div class="accordion-name">${c.title||'Case Study'}</div><div class="accordion-meta">${c.industry||''}</div></div>
+        </div>
+        <span class="accordion-chevron" id="cc-${i}">▼</span>
+      </div>
+      <div class="accordion-body" id="cb-${i}">
+        <div class="section-divide"><div class="section-divide-line"></div><div class="section-divide-label">Card Display</div><div class="section-divide-line"></div></div>
+        <div class="form-grid">
+          <div class="field form-full"><label>Industry</label><input type="text" value="${c.industry||''}" onchange="STATE.casestudies[${i}].industry=this.value"/></div>
+          <div class="field form-full"><label>Title</label><input type="text" value="${c.title||''}" onchange="STATE.casestudies[${i}].title=this.value"/></div>
+          <div class="field form-full"><label>Impact Line</label><input type="text" value="${c.impact||''}" onchange="STATE.casestudies[${i}].impact=this.value"/></div>
+          <div class="field form-full"><label>Tags <span class="field-hint">comma separated</span></label><input type="text" value="${c.tags||''}" onchange="STATE.casestudies[${i}].tags=this.value"/></div>
+        </div>
+        <div class="section-divide"><div class="section-divide-line"></div><div class="section-divide-label">Metrics</div><div class="section-divide-line"></div></div>
+        <div class="form-grid-3">
+          <div class="field"><label>Metric 1 Value</label><input type="text" value="${c.m1_val||''}" onchange="STATE.casestudies[${i}].m1_val=this.value"/></div>
+          <div class="field"><label>Metric 1 Label</label><input type="text" value="${c.m1_label||''}" onchange="STATE.casestudies[${i}].m1_label=this.value"/></div><div class="field"></div>
+          <div class="field"><label>Metric 2 Value</label><input type="text" value="${c.m2_val||''}" onchange="STATE.casestudies[${i}].m2_val=this.value"/></div>
+          <div class="field"><label>Metric 2 Label</label><input type="text" value="${c.m2_label||''}" onchange="STATE.casestudies[${i}].m2_label=this.value"/></div><div class="field"></div>
+          <div class="field"><label>Metric 3 Value</label><input type="text" value="${c.m3_val||''}" onchange="STATE.casestudies[${i}].m3_val=this.value"/></div>
+          <div class="field"><label>Metric 3 Label</label><input type="text" value="${c.m3_label||''}" onchange="STATE.casestudies[${i}].m3_label=this.value"/></div><div class="field"></div>
+        </div>
+        <div class="section-divide"><div class="section-divide-line"></div><div class="section-divide-label">Modal Body</div><div class="section-divide-line"></div></div>
+        <div class="field"><label>Problem</label><textarea rows="3" onchange="STATE.casestudies[${i}].problem=this.value">${c.problem||''}</textarea></div>
+        <div class="field"><label>Approach</label><textarea rows="3" onchange="STATE.casestudies[${i}].approach=this.value">${c.approach||''}</textarea></div>
+        <div class="field"><label>Techniques</label><textarea rows="2" onchange="STATE.casestudies[${i}].techniques=this.value">${c.techniques||''}</textarea></div>
+        <div class="field"><label>Outcome</label><textarea rows="3" onchange="STATE.casestudies[${i}].outcome=this.value">${c.outcome||''}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+function renderTestimonials(ts) {
+  const list=document.getElementById('testimonials-list'); if(!list) return;
+  list.innerHTML=ts.map((t,i)=>`
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Testimonial ${i+1}</div>
+        ${ts.length>1?`<button class="btn btn-danger btn-sm" onclick="removeTestimonial(${i})">Remove</button>`:''}
+      </div>
+      <div class="field"><label>Quote</label><textarea rows="3" onchange="STATE.testimonials[${i}].quote=this.value">${t.quote||''}</textarea></div>
+      <div class="form-grid">
+        <div class="field"><label>Author</label><input type="text" value="${t.author||''}" onchange="STATE.testimonials[${i}].author=this.value"/></div>
+        <div class="field"><label>Role / Company</label><input type="text" value="${t.role||''}" onchange="STATE.testimonials[${i}].role=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+function updateDashboard() {
+  document.getElementById('d-artifacts').textContent    = STATE.artifacts.length;
+  document.getElementById('d-casestudies').textContent  = STATE.casestudies.length;
+  document.getElementById('d-testimonials').textContent = STATE.testimonials.length;
+  if(db) {
+    getDocs(collection(db,'contactMessages'))
+      .then(s=>document.getElementById('d-messages').textContent=s.size)
+      .catch(()=>document.getElementById('d-messages').textContent='—');
+  }
+}
+
+// ── SAVE — direct Firebase calls, no bridge ──
+async function fbSave(section, data) {
+  if(!db) throw new Error('Firebase not initialized');
+  await setDoc(doc(db,'siteContent',section), { data, updatedAt: new Date().toISOString() });
+}
+async function runSave(btnId, section, data) {
+  const btn=document.getElementById(btnId);
+  const orig=btn.textContent;
+  btn.textContent='Saving…'; btn.disabled=true;
+  try {
+    await fbSave(section, data);
+    STATE[section]=data;
+    btn.textContent='✓ Saved'; btn.disabled=false;
+    setTimeout(()=>btn.textContent=orig, 2500);
+    showToast('✓ '+section+' saved — live site updated.');
+  } catch(e) {
+    btn.textContent=orig; btn.disabled=false;
+    showToast('Save failed: '+e.message, true);
+    console.error('Save error:',e);
+  }
+}
+
+// ── INDIVIDUAL SAVERS ──
+async function saveHero() {
+  await runSave('save-hero','hero',{
+    eyebrow:document.getElementById('h-eyebrow').value,
+    line1:document.getElementById('h-line1').value,
+    line2:document.getElementById('h-line2').value,
+    line3:document.getElementById('h-line3').value,
+    desc:document.getElementById('h-desc').value,
+    sn1:document.getElementById('sn1').value, sl1:document.getElementById('sl1').value,
+    sn2:document.getElementById('sn2').value, sl2:document.getElementById('sl2').value,
+    sn3:document.getElementById('sn3').value, sl3:document.getElementById('sl3').value,
+    sn4:document.getElementById('sn4').value, sl4:document.getElementById('sl4').value
+  });
+}
+async function saveValueProps() {
+  await runSave('save-valueprops','valueprops',[1,2,3].map(i=>({
+    num:'0'+i,
+    title:document.getElementById('vp'+i+'-title').value,
+    desc:document.getElementById('vp'+i+'-desc').value
+  })));
+}
+async function saveTimeline()    { await runSave('save-timeline','timeline', STATE.timeline); }
+async function saveArtifacts()   { await runSave('save-artifacts','artifacts', STATE.artifacts); }
+async function saveCaseStudies() { await runSave('save-casestudies','casestudies', STATE.casestudies); }
+async function saveTestimonials(){ await runSave('save-testimonials','testimonials', STATE.testimonials); }
+async function saveSettings() {
+  await runSave('save-settings','settings',{
+    email:document.getElementById('s-email').value,
+    linkedin:document.getElementById('s-linkedin').value,
+    github:document.getElementById('s-github').value,
+    calendly:document.getElementById('s-calendly').value,
+    resume:document.getElementById('s-resume').value,
+    availability:document.getElementById('s-availability').value
+  });
+}
+
+// ── ADD / REMOVE ──
+function addArtifact() {
+  STATE.artifacts.push({id:'a'+Date.now(),category:'Requirements',title:'New Artifact',desc:'',format:'PDF',url:''});
+  renderArtifacts(STATE.artifacts);
+}
+function removeArtifact(i) {
+  if(!confirm('Remove this artifact?')) return;
+  STATE.artifacts.splice(i,1); renderArtifacts(STATE.artifacts);
+}
+function addTestimonial() {
+  STATE.testimonials.push({id:'t'+Date.now(),quote:'',author:'',role:''});
+  renderTestimonials(STATE.testimonials);
+}
+function removeTestimonial(i) {
+  if(!confirm('Remove?')) return;
+  STATE.testimonials.splice(i,1); renderTestimonials(STATE.testimonials);
+}
+
+// ── INIT ──
+async function initAdmin() {
+  // 1. Pre-fill everything with defaults immediately
+  populateHero(DEFAULTS.hero);
+  populateValueProps(DEFAULTS.valueprops);
+  renderTimeline(DEFAULTS.timeline);
+  renderArtifacts(DEFAULTS.artifacts);
+  renderCaseStudies(DEFAULTS.casestudies);
+  renderTestimonials(DEFAULTS.testimonials);
+  populateSettings(DEFAULTS.settings);
+  updateDashboard();
+
+  // 2. Load from Firestore and overwrite
+  if(!db) { showToast('Firebase not connected — working in offline mode', true); return; }
+  const sections = ['hero','valueprops','timeline','artifacts','casestudies','testimonials','settings'];
+  let loaded=0;
+  for(const s of sections) {
+    try {
+      const snap = await getDoc(doc(db,'siteContent',s));
+      if(snap.exists()) {
+        const raw = snap.data();
+        const d = (raw && raw.data !== undefined) ? raw.data : raw;
+        STATE[s] = d;
+        loaded++;
+      }
+    } catch(e) { console.warn('Load',s,e.message); }
+  }
+  // 3. Re-populate with Firestore data
+  populateHero(STATE.hero);
+  populateValueProps(STATE.valueprops);
+  renderTimeline(STATE.timeline);
+  renderArtifacts(STATE.artifacts);
+  renderCaseStudies(STATE.casestudies);
+  renderTestimonials(STATE.testimonials);
+  populateSettings(STATE.settings);
+  updateDashboard();
+
+  const el=document.getElementById('fb-status-sidebar');
+  if(el) el.textContent = loaded>0 ? `● Loaded ${loaded} sections from Firestore` : '● Connected — no saved data yet';
+  if(el) el.style.color = '#6fcf97';
+}
+
+// ── EXPOSE TO HTML onclick ──
+window.doLogin=doLogin; window.doLogout=doLogout; window.changePassword=changePassword;
+window.showPanel=showPanel; window.toggleAccordion=toggleAccordion;
+window.addArtifact=addArtifact; window.removeArtifact=removeArtifact;
+window.addTestimonial=addTestimonial; window.removeTestimonial=removeTestimonial;
+window.saveHero=saveHero; window.saveValueProps=saveValueProps; window.saveTimeline=saveTimeline;
+window.saveArtifacts=saveArtifacts; window.saveCaseStudies=saveCaseStudies;
+window.saveTestimonials=saveTestimonials; window.saveSettings=saveSettings;
+window.STATE=STATE;
+</script>
+</body>
+</html>

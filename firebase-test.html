@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Firebase Diagnostic — Spurgeon Thomas</title>
+<style>
+  body { font-family: monospace; background: #0f1117; color: #e2e8f0; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  h1 { color: #b8924a; margin-bottom: .25rem; font-size: 1.2rem; }
+  .sub { color: #4a5568; font-size: .75rem; margin-bottom: 2rem; }
+  .card { background: #1a1d27; border: 1px solid #2d3748; padding: 1.5rem; margin-bottom: 1rem; border-radius: 4px; }
+  .card h2 { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: #718096; margin-bottom: 1rem; border-bottom: 1px solid #2d3748; padding-bottom: .5rem; }
+  .row { display: flex; align-items: flex-start; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid #1e2433; font-size: .85rem; }
+  .row:last-child { border-bottom: none; }
+  .label { color: #718096; width: 200px; flex-shrink: 0; }
+  .val { color: #e2e8f0; flex: 1; word-break: break-all; }
+  .ok   { color: #48bb78; }
+  .warn { color: #f6ad55; }
+  .err  { color: #fc8181; }
+  .pending { color: #718096; font-style: italic; }
+  .section-data { background: #111420; border: 1px solid #2d3748; padding: 1rem; margin-top: .75rem; font-size: .78rem; max-height: 200px; overflow-y: auto; white-space: pre-wrap; color: #a0aec0; }
+  .btn { background: #b8924a; color: white; border: none; padding: .6rem 1.4rem; font-family: monospace; font-size: .8rem; cursor: pointer; margin-right: .5rem; margin-top: 1rem; }
+  .btn:hover { background: #d4ac6a; }
+  .btn-danger { background: #2d3748; }
+  .step { display: flex; align-items: center; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid #1e2433; }
+  .step:last-child { border-bottom: none; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: #2d3748; display: flex; align-items: center; justify-content: center; font-size: .7rem; color: #718096; flex-shrink: 0; }
+  .step-num.ok { background: rgba(72,187,120,.15); color: #48bb78; }
+  .step-num.err { background: rgba(252,129,129,.15); color: #fc8181; }
+  .step-text { font-size: .85rem; }
+  .step-detail { font-size: .72rem; color: #4a5568; margin-top: .15rem; }
+  #log { background: #080a10; border: 1px solid #2d3748; padding: 1rem; font-size: .72rem; color: #48bb78; max-height: 300px; overflow-y: auto; margin-top: 1rem; }
+  .log-err { color: #fc8181; }
+  .log-warn { color: #f6ad55; }
+  .log-info { color: #63b3ed; }
+</style>
+</head>
+<body>
+
+<h1>🔧 Firebase Diagnostic</h1>
+<div class="sub">spurgeon-thomas-portfolio · Systematic Institute · Run this page from your live server to diagnose CMS issues</div>
+
+<div class="card">
+  <h2>Step-by-Step Status</h2>
+  <div class="step" id="s-page"><div class="step-num" id="sn-page">1</div><div><div class="step-text">Page protocol check</div><div class="step-detail" id="sd-page">Checking…</div></div></div>
+  <div class="step" id="s-sdk"><div class="step-num" id="sn-sdk">2</div><div><div class="step-text">Firebase SDK loaded</div><div class="step-detail" id="sd-sdk">Waiting…</div></div></div>
+  <div class="step" id="s-init"><div class="step-num" id="sn-init">3</div><div><div class="step-text">Firebase app initialized</div><div class="step-detail" id="sd-init">Waiting…</div></div></div>
+  <div class="step" id="s-read"><div class="step-num" id="sn-read">4</div><div><div class="step-text">Firestore read (siteContent/hero)</div><div class="step-detail" id="sd-read">Waiting…</div></div></div>
+  <div class="step" id="s-write"><div class="step-num" id="sn-write">5</div><div><div class="step-text">Firestore write test</div><div class="step-detail" id="sd-write">Not run yet</div></div></div>
+</div>
+
+<div class="card">
+  <h2>Firestore Documents Found</h2>
+  <div id="docs-list"><span class="pending">Running checks…</span></div>
+</div>
+
+<div class="card">
+  <h2>Actions</h2>
+  <button class="btn" onclick="runWriteTest()">▶ Run Write Test</button>
+  <button class="btn" onclick="readAllSections()">↻ Re-read All Sections</button>
+  <button class="btn btn-danger" onclick="clearLog()">Clear Log</button>
+  <div id="log"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const cfg = {
+  apiKey:            "AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
+  authDomain:        "systematic-institute.firebaseapp.com",
+  projectId:         "systematic-institute",
+  storageBucket:     "systematic-institute.firebasestorage.app",
+  messagingSenderId: "663014267999",
+  appId:             "1:663014267999:web:7d5b24c3729c2edabe8fea"
+};
+
+function log(msg, type='') {
+  const el = document.getElementById('log');
+  const line = document.createElement('div');
+  line.className = type ? 'log-'+type : '';
+  line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStep(id, status, detail) {
+  const num = document.getElementById('sn-'+id);
+  const det = document.getElementById('sd-'+id);
+  if(num) { num.className = 'step-num ' + status; num.textContent = status === 'ok' ? '✓' : status === 'err' ? '✗' : id.replace(/[^0-9]/g,'') || '?'; }
+  if(det) det.textContent = detail;
+}
+
+// STEP 1: Protocol check
+const protocol = location.protocol;
+if(protocol === 'file:') {
+  setStep('page','err','❌ Running from file:// — Firebase WILL NOT work. You must upload this to a web server.');
+  log('CRITICAL: file:// protocol detected. Firebase requires http:// or https://. Upload your files to Netlify/GoDaddy and open from there.', 'err');
+} else {
+  setStep('page','ok', '✓ ' + protocol + '//' + location.hostname);
+  log('Protocol OK: ' + location.href, 'info');
+}
+
+// STEP 2-3: SDK + Init
+let db;
+try {
+  setStep('sdk','ok','✓ Firebase SDK loaded from CDN');
+  log('Firebase SDK imported successfully', 'info');
+
+  const app = initializeApp(cfg);
+  db = getFirestore(app);
+  window.__testDb = db;
+  window.__testDoc = doc;
+  window.__testGetDoc = getDoc;
+  window.__testSetDoc = setDoc;
+  window.__testGetDocs = getDocs;
+  window.__testCollection = collection;
+  setStep('init','ok','✓ App: systematic-institute · Region: default');
+  log('Firebase initialized. Project: systematic-institute', 'info');
+
+  // STEP 4: Read test
+  await runReadTest(db, doc, getDoc, getDocs, collection);
+
+} catch(e) {
+  setStep('sdk','err','✗ ' + e.message);
+  log('Firebase init error: ' + e.message, 'err');
+}
+
+async function runReadTest(db, doc, getDoc, getDocs, collection) {
+  setStep('read','pending','Reading siteContent/hero…');
+  log('Attempting read: siteContent/hero…', 'info');
+  try {
+    const snap = await getDoc(doc(db, 'siteContent', 'hero'));
+    if(snap.exists()) {
+      const raw = snap.data();
+      setStep('read','ok','✓ Document exists · keys: ' + Object.keys(raw).join(', '));
+      log('siteContent/hero EXISTS. Raw keys: ' + Object.keys(raw).join(', '), 'info');
+      log('raw.data type: ' + (Array.isArray(raw.data) ? 'array['+raw.data.length+']' : typeof raw.data), 'info');
+      if(raw.data) log('raw.data sample: ' + JSON.stringify(raw.data).substring(0,200), 'info');
+    } else {
+      setStep('read','warn','⚠ Document does not exist yet — nothing saved to Firestore');
+      log('siteContent/hero does NOT exist in Firestore. Has admin.html been used to save?', 'warn');
+    }
+  } catch(e) {
+    setStep('read','err','✗ Read failed: ' + e.message);
+    log('Read FAILED: ' + e.message, 'err');
+    log('This usually means Firestore rules are blocking reads, or the project ID is wrong.', 'warn');
+  }
+  await readAllSections();
+}
+
+window.readAllSections = async function() {
+  if(!window.__testDb) { log('DB not ready', 'err'); return; }
+  const sections = ['hero','valueprops','timeline','artifacts','casestudies','testimonials','settings'];
+  const container = document.getElementById('docs-list');
+  container.innerHTML = '';
+  log('Reading all siteContent sections…', 'info');
+
+  for(const s of sections) {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<span class="label">${s}</span><span class="val pending" id="doc-${s}">reading…</span>`;
+    container.appendChild(row);
+    try {
+      const snap = await window.__testGetDoc(window.__testDoc(window.__testDb,'siteContent',s));
+      const valEl = document.getElementById('doc-'+s);
+      if(snap.exists()) {
+        const raw = snap.data();
+        const dataVal = raw.data;
+        const summary = Array.isArray(dataVal) ? `array[${dataVal.length}]` : typeof dataVal === 'object' && dataVal ? `object, keys: ${Object.keys(dataVal).join(', ')}` : `missing — raw keys: ${Object.keys(raw).join(', ')}`;
+        valEl.className = 'val ok';
+        valEl.textContent = '✓ exists · data: ' + summary;
+
+        // Show raw data
+        const pre = document.createElement('div');
+        pre.className = 'section-data';
+        pre.textContent = JSON.stringify(raw, null, 2).substring(0, 800);
+        row.appendChild(pre);
+        log(`${s}: EXISTS · ` + summary, 'info');
+      } else {
+        valEl.className = 'val warn';
+        valEl.textContent = '⚠ not saved yet';
+        log(`${s}: not in Firestore`, 'warn');
+      }
+    } catch(e) {
+      const valEl = document.getElementById('doc-'+s);
+      if(valEl){ valEl.className='val err'; valEl.textContent='✗ error: '+e.message; }
+      log(`${s}: ERROR — ${e.message}`, 'err');
+    }
+  }
+}
+
+window.runWriteTest = async function() {
+  if(!window.__testDb) { log('DB not ready', 'err'); return; }
+  setStep('write','pending','Writing test document…');
+  log('Writing test document to siteContent/_test…', 'info');
+  try {
+    await window.__testSetDoc(
+      window.__testDoc(window.__testDb, 'siteContent', '_test'),
+      { data: { test: true, ts: new Date().toISOString() }, updatedAt: new Date().toISOString() }
+    );
+    setStep('write','ok','✓ Write successful — Firestore rules allow writes');
+    log('Write SUCCESS. Your Firestore rules are correctly configured.', 'info');
+
+    // Verify by reading back
+    const snap = await window.__testGetDoc(window.__testDoc(window.__testDb,'siteContent','_test'));
+    if(snap.exists()) {
+      log('Read-back SUCCESS: ' + JSON.stringify(snap.data()), 'info');
+    }
+  } catch(e) {
+    setStep('write','err','✗ Write failed: ' + e.message);
+    log('Write FAILED: ' + e.message, 'err');
+    log('This means your Firestore security rules are blocking writes from the browser. Check Firebase Console → Firestore → Rules.', 'warn');
+  }
+}
+
+window.clearLog = function() { document.getElementById('log').innerHTML = ''; }
+</script>
+</body>
+</html>
