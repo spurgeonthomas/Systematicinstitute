@@ -54,6 +54,7 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
 .btn-danger{background:#fdf0f0;color:var(--red);border:1px solid #e8b4b4}.btn-danger:hover{background:var(--red);color:white}
 .btn-sm{padding:.4rem .9rem;font-size:.58rem}
 .btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--rule)}.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.btn-restore{background:#f0faf4;color:var(--green);border:1px solid #a8d5b5}.btn-restore:hover{background:var(--green);color:white}
 .card{background:white;border:1px solid var(--rule);padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--rule)}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600}
@@ -111,6 +112,39 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
 .instructions-box li{font-size:.85rem;color:var(--mid);line-height:1.7;margin-bottom:.3rem}
 .instructions-box li strong{color:var(--ink);font-weight:500}
 .instructions-box code{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:rgba(184,146,74,.12);padding:.1rem .35rem;color:var(--teal)}
+/* Rich text editor */
+.rte-wrap{border:1px solid var(--rule);background:var(--paper);transition:var(--t)}
+.rte-wrap:focus-within{border-color:var(--gold);background:white;box-shadow:0 0 0 3px rgba(184,146,74,.08)}
+.rte-toolbar{display:flex;gap:.25rem;padding:.5rem .75rem;border-bottom:1px solid var(--rule);background:var(--cream);flex-wrap:wrap}
+.rte-btn{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.28rem .6rem;background:none;border:1px solid transparent;cursor:pointer;color:var(--mid);transition:var(--t);border-radius:2px}
+.rte-btn:hover{background:white;border-color:var(--rule);color:var(--ink)}
+.rte-btn.active{background:var(--teal);color:white;border-color:var(--teal)}
+.rte-editor{min-height:80px;padding:.72rem 1rem;outline:none;font-family:'Inter',sans-serif;font-size:.875rem;font-weight:300;line-height:1.65;color:var(--ink)}
+.rte-editor p{margin:0 0 .5em}
+.rte-editor ul,.rte-editor ol{padding-left:1.4em;margin:.25em 0}
+/* Version history */
+.version-list{display:flex;flex-direction:column;gap:.75rem;max-height:400px;overflow-y:auto}
+.version-item{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;background:white;border:1px solid var(--rule);transition:var(--t)}
+.version-item:hover{border-color:var(--gold-light)}
+.version-meta{display:flex;flex-direction:column;gap:.2rem}
+.version-ts{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink);letter-spacing:.04em}
+.version-section{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.version-empty{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--soft);text-align:center;padding:2rem;letter-spacing:.06em}
+/* Preview panel */
+.preview-panel{position:fixed;top:0;right:0;width:50vw;height:100vh;background:white;border-left:2px solid var(--gold);z-index:500;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.preview-panel.open{transform:none}
+.preview-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.2rem;background:var(--ink);border-bottom:1px solid rgba(250,248,244,.08)}
+.preview-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light)}
+.preview-close{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(250,248,244,.45);background:none;border:1px solid rgba(250,248,244,.15);padding:.3rem .7rem;cursor:pointer;transition:var(--t)}
+.preview-close:hover{color:var(--paper);border-color:rgba(250,248,244,.4)}
+.preview-iframe{flex:1;border:none;width:100%}
+/* Skill tag editor */
+.tag-input-wrap{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;padding:.5rem;border:1px solid var(--rule);background:var(--paper);min-height:2.8rem;transition:var(--t);cursor:text}
+.tag-input-wrap:focus-within{border-color:var(--gold);background:white}
+.tag-chip{font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:.2rem .55rem;background:var(--cream);border:1px solid var(--rule);color:var(--mid);display:inline-flex;align-items:center;gap:.3rem}
+.tag-chip-remove{cursor:pointer;color:var(--soft);font-size:.7rem;line-height:1;transition:color .15s}
+.tag-chip-remove:hover{color:var(--red)}
+.tag-input{font-family:'Inter',sans-serif;font-size:.82rem;border:none;outline:none;background:none;min-width:80px;color:var(--ink);padding:.1rem .2rem}
 @media(max-width:900px){
   .admin-wrap{grid-template-columns:1fr}
   .sidebar{height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:1rem;padding:1rem 1.5rem}
@@ -118,6 +152,7 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
   .main-content{padding:1.5rem}
   .dash-grid{grid-template-columns:1fr 1fr}
   .form-grid,.form-grid-3,.stats-edit-grid{grid-template-columns:1fr}
+  .preview-panel{width:100vw}
 }
 </style>
 </head>
@@ -137,12 +172,21 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
 
 <div id="toast"></div>
 
+<!-- LIVE PREVIEW PANEL -->
+<div class="preview-panel" id="previewPanel">
+  <div class="preview-header">
+    <span class="preview-title">◈ Live Preview — spurgeonthomas.github.io/Systematicinstitute</span>
+    <button class="preview-close" onclick="togglePreview()">✕ Close Preview</button>
+  </div>
+  <iframe class="preview-iframe" id="previewFrame" src="about:blank"></iframe>
+</div>
+
 <!-- ADMIN APP -->
 <div class="admin-wrap" id="admin-app" style="display:none">
   <aside class="sidebar">
     <div>
       <div class="sidebar-logo">Spurgeon <span>Thomas Jr</span></div>
-      <div class="sidebar-sub">CMS Admin Panel</div>
+      <div class="sidebar-sub">CMS Admin Panel v2</div>
       <div class="sidebar-section">Content</div>
       <div class="nav-item active" onclick="showPanel('dashboard')" id="nav-dashboard"><span class="ico">◈</span>Dashboard</div>
       <div class="nav-item" onclick="showPanel('hero')" id="nav-hero"><span class="ico">⬡</span>Hero & Stats</div>
@@ -152,8 +196,15 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       <div class="nav-item" onclick="showPanel('casestudies')" id="nav-casestudies"><span class="ico">📋</span>Case Studies</div>
       <div class="nav-item" onclick="showPanel('testimonials')" id="nav-testimonials"><span class="ico">💬</span>Testimonials</div>
       <div class="sidebar-section">Site</div>
+      <div class="nav-item" onclick="showPanel('nav-section')" id="nav-nav-section"><span class="ico">☰</span>Nav & Logo</div>
+      <div class="nav-item" onclick="showPanel('expertise')" id="nav-expertise"><span class="ico">★</span>Expertise</div>
+      <div class="nav-item" onclick="showPanel('services')" id="nav-services"><span class="ico">◐</span>Services</div>
+      <div class="nav-item" onclick="showPanel('footer')" id="nav-footer"><span class="ico">▬</span>Footer</div>
+      <div class="sidebar-section">Tools</div>
+      <div class="nav-item" onclick="showPanel('history')" id="nav-history"><span class="ico">⟳</span>Version History</div>
+      <div class="nav-item" onclick="togglePreview()" id="nav-preview"><span class="ico">👁</span>Live Preview</div>
       <div class="nav-item" onclick="showPanel('settings')" id="nav-settings"><span class="ico">⚙</span>Settings</div>
-      <a class="nav-item" href="spurgeon-thomas-portfolio.html" target="_blank"><span class="ico">↗</span>View Live Site</a>
+      <a class="nav-item" href="https://spurgeonthomas.github.io/Systematicinstitute/" target="_blank"><span class="ico">↗</span>View Live Site</a>
     </div>
     <div class="sidebar-footer">
       <div class="sidebar-status" id="fb-status-sidebar">Connecting…</div>
@@ -177,19 +228,19 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
         <div class="dash-stat"><div class="dash-stat-num" id="d-messages">—</div><div class="dash-stat-label">Contact Messages</div></div>
       </div>
       <div class="instructions-box">
-        <h4>How to update your live site</h4>
+        <h4>What's new in v2</h4>
         <ol>
-          <li>Pick a section in the <strong>sidebar</strong> (Hero, Value Props, Timeline, etc.)</li>
-          <li>Edit the fields — content is pre-filled from your current site</li>
-          <li>Click <strong>Save Changes</strong> — your live site updates <strong>instantly</strong>, no redeploy needed</li>
-          <li>For artifact files: <strong>upload to GitHub first</strong>, then paste the raw URL in the Artifacts section</li>
+          <li><strong>Version History</strong> — every save creates a snapshot. Restore any previous version with one click.</li>
+          <li><strong>Live Preview</strong> — click the 👁 icon or "Live Preview" in the sidebar to open your site in a panel alongside the editor.</li>
+          <li><strong>Rich Text Editor</strong> — descriptions now support bold, italic, and bullet lists.</li>
+          <li><strong>4 new sections</strong> — Nav & Logo, Expertise, Services, and Footer are now fully editable.</li>
         </ol>
       </div>
       <div class="dash-activity">
         <div class="dash-activity-title">Quick Start Checklist</div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text"><strong>Upload artifact files to GitHub</strong> — go to github.com/spurgeonthomas/Systematicinstitute → Add file → Upload</div><div class="activity-time">Format: https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/YOUR-FILE.pdf</div></div></div>
         <div class="activity-item"><div class="activity-dot" style="background:var(--teal)"></div><div><div class="activity-text"><strong>Change your admin password</strong> in Settings before publishing</div><div class="activity-time">Default: Systematic2026! — stored in your browser localStorage</div></div></div>
-        <div class="activity-item"><div class="activity-dot" style="background:var(--soft)"></div><div><div class="activity-text"><strong>Save each section once</strong> to push defaults into Firestore, then edit from there</div><div class="activity-time">Tip: open each panel, click Save — this seeds the database with your current content</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--soft)"></div><div><div class="activity-text"><strong>Try Live Preview</strong> — click the 👁 icon in the sidebar to see your site alongside the editor</div><div class="activity-time">Preview refreshes each time you open it</div></div></div>
       </div>
     </div>
 
@@ -210,7 +261,7 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
         <div class="field"><label>Headline — Line 1</label><input type="text" id="h-line1" placeholder="Turning complexity"/></div>
         <div class="field"><label>Headline — Line 2 <span class="field-hint">italic gold text</span></label><input type="text" id="h-line2" placeholder="into clarity —"/></div>
         <div class="field"><label>Headline — Line 3 <span class="field-hint">bold text</span></label><input type="text" id="h-line3" placeholder="and clarity into results."/></div>
-        <div class="field"><label>Description Paragraph</label><textarea id="h-desc" rows="3" placeholder="For over 25 years…"></textarea></div>
+        <div class="field"><label>Description Paragraph <span class="field-hint">supports **bold** with asterisks</span></label><textarea id="h-desc" rows="3" placeholder="For over 25 years…"></textarea></div>
       </div>
       <div class="section-divide"><div class="section-divide-line"></div><div class="section-divide-label">Hero Statistics (4 blocks)</div><div class="section-divide-line"></div></div>
       <div class="stats-edit-grid">
@@ -235,17 +286,17 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       <div class="card">
         <div class="card-header"><div class="card-title">Value Prop 01</div></div>
         <div class="field"><label>Title</label><input type="text" id="vp1-title" placeholder="Requirements Excellence"/></div>
-        <div class="field"><label>Description</label><textarea id="vp1-desc" rows="3" placeholder="I don't just document what stakeholders say…"></textarea></div>
+        <div class="field"><label>Description</label><div class="rte-wrap" id="rte-vp1-wrap"><div class="rte-toolbar" id="rte-vp1-tb"></div><div class="rte-editor" id="rte-vp1" contenteditable="true"></div></div></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Value Prop 02</div></div>
         <div class="field"><label>Title</label><input type="text" id="vp2-title" placeholder="Process Intelligence"/></div>
-        <div class="field"><label>Description</label><textarea id="vp2-desc" rows="3" placeholder="Every inefficiency is a story waiting to be told…"></textarea></div>
+        <div class="field"><label>Description</label><div class="rte-wrap" id="rte-vp2-wrap"><div class="rte-toolbar" id="rte-vp2-tb"></div><div class="rte-editor" id="rte-vp2" contenteditable="true"></div></div></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Value Prop 03</div></div>
         <div class="field"><label>Title</label><input type="text" id="vp3-title" placeholder="Delivery Transformation"/></div>
-        <div class="field"><label>Description</label><textarea id="vp3-desc" rows="3" placeholder="Agile, SAFe, or hybrid…"></textarea></div>
+        <div class="field"><label>Description</label><div class="rte-wrap" id="rte-vp3-wrap"><div class="rte-toolbar" id="rte-vp3-tb"></div><div class="rte-editor" id="rte-vp3" contenteditable="true"></div></div></div>
       </div>
     </div>
 
@@ -254,7 +305,7 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       <div class="panel-header">
         <div class="panel-eyebrow"><span>Career Progression</span></div>
         <h1 class="panel-title">Career Timeline</h1>
-        <p class="panel-desc">Edit your four career milestones. Each entry appears as a point on the timeline.</p>
+        <p class="panel-desc">Edit your career milestones. Each entry appears as a point on the timeline.</p>
       </div>
       <div class="save-bar">
         <span class="save-bar-info">Section: <span>Career Timeline</span></span>
@@ -320,6 +371,101 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       <div id="testimonials-list"></div>
     </div>
 
+    <!-- NAV & LOGO -->
+    <div class="panel" id="panel-nav-section">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Navigation</span></div>
+        <h1 class="panel-title">Nav & Logo</h1>
+        <p class="panel-desc">Edit the top navigation bar — logo text, tagline, and the "Book a Call" button URL.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Nav & Logo</span></span>
+        <button class="btn btn-save" id="save-nav" onclick="saveNav()">Save Changes</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Logo</div></div>
+        <div class="form-grid">
+          <div class="field"><label>Logo Name <span class="field-hint">first part</span></label><input type="text" id="nav-logo-name" placeholder="Spurgeon Thomas Jr"/></div>
+          <div class="field"><label>Logo Highlight <span class="field-hint">italic gold part</span></label><input type="text" id="nav-logo-span" placeholder="Thomas Jr"/></div>
+          <div class="field"><label>Logo Badge <span class="field-hint">small label e.g. BSA</span></label><input type="text" id="nav-logo-sub" placeholder="BSA"/></div>
+          <div class="field"><label>Book a Call URL</label><input type="url" id="nav-cta-url" placeholder="https://calendly.com/…"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Page Title</div><div class="card-badge">Browser tab</div></div>
+        <div class="field"><label>Browser Tab Title</label><input type="text" id="nav-page-title" placeholder="Spurgeon Thomas Jr | Senior BSA &amp; Consulting"/></div>
+      </div>
+    </div>
+
+    <!-- EXPERTISE -->
+    <div class="panel" id="panel-expertise">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Skills Section</span></div>
+        <h1 class="panel-title">Expertise</h1>
+        <p class="panel-desc">Edit skill categories and tags. Type a skill and press Enter or comma to add. Click × to remove.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Expertise</span></span>
+        <button class="btn btn-save" id="save-expertise" onclick="saveExpertise()">Save Changes</button>
+      </div>
+      <div id="expertise-list"></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="panel" id="panel-services">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Consulting Offerings</span></div>
+        <h1 class="panel-title">Services</h1>
+        <p class="panel-desc">Edit all six consulting service cards shown in the Services section.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Services</span></span>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn btn-add" onclick="addService()">+ Add Service</button>
+          <button class="btn btn-save" id="save-services" onclick="saveServices()">Save All</button>
+        </div>
+      </div>
+      <div id="services-list"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="panel" id="panel-footer">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Footer</span></div>
+        <h1 class="panel-title">Footer</h1>
+        <p class="panel-desc">Edit the footer brand description, copyright line, and compliance note.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Section: <span>Footer</span></span>
+        <button class="btn btn-save" id="save-footer" onclick="saveFooter()">Save Changes</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Brand Block</div></div>
+        <div class="field"><label>Brand Description</label><textarea id="footer-brand-desc" rows="3" placeholder="Senior Business Systems Analyst &amp; Consultant…"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Bottom Bar</div></div>
+        <div class="field"><label>Copyright Line</label><input type="text" id="footer-copy" placeholder="© 2026 Spurgeon Thomas Jr · Systematic Institute · CBAP Aligned · CSM"/></div>
+        <div class="field"><label>Compliance Note</label><input type="text" id="footer-compliance" placeholder="All case studies anonymized per constraints C01–C03 · WCAG 2.1 compliant"/></div>
+      </div>
+    </div>
+
+    <!-- VERSION HISTORY -->
+    <div class="panel" id="panel-history">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Version Control</span></div>
+        <h1 class="panel-title">Version History</h1>
+        <p class="panel-desc">Every save creates a snapshot. Click Restore to roll back any section to a previous state.</p>
+      </div>
+      <div class="save-bar">
+        <span class="save-bar-info">Showing last <span>20 snapshots</span></span>
+        <button class="btn btn-ghost" onclick="loadHistory()">↺ Refresh</button>
+      </div>
+      <div id="version-list" class="version-list">
+        <div class="version-empty">Loading history…</div>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="panel" id="panel-settings">
       <div class="panel-header">
@@ -349,179 +495,267 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
           <div class="field"><label>Confirm Password</label><input type="password" id="s-pw2"/></div>
         </div>
         <button class="btn btn-ghost" style="margin-top:1rem" onclick="changePassword()">Update Password</button>
-        <p style="font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--soft);margin-top:.75rem;letter-spacing:.04em">⚠ Password stored in browser localStorage. Change it before making this page public.</p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--soft);margin-top:.75rem;letter-spacing:.04em">⚠ Password stored in browser localStorage.</p>
       </div>
     </div>
 
   </main>
 </div>
 
-<script type="module">
-// ── Single self-contained ES module — no window.__ bridging needed ──
-import { initializeApp }    from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
-                             from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
 const FB_CFG = {
-  apiKey:            "AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
-  authDomain:        "systematic-institute.firebaseapp.com",
-  projectId:         "systematic-institute",
-  storageBucket:     "systematic-institute.firebasestorage.app",
-  messagingSenderId: "663014267999",
-  appId:             "1:663014267999:web:7d5b24c3729c2edabe8fea",
-  measurementId:     "G-W7REQ9PGRZ"
+  apiKey:"AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
+  authDomain:"systematic-institute.firebaseapp.com",
+  projectId:"systematic-institute",
+  storageBucket:"systematic-institute.firebasestorage.app",
+  messagingSenderId:"663014267999",
+  appId:"1:663014267999:web:7d5b24c3729c2edabe8fea",
+  measurementId:"G-W7REQ9PGRZ"
 };
 
-// ── DEFAULTS ──
-const DEFAULTS = {
-  hero: {
-    eyebrow:'Senior Business Systems Analyst · Consultant',
-    line1:'Turning complexity', line2:'into clarity —', line3:'and clarity into results.',
-    desc:"For over 25 years, I've helped organizations bridge the gap between what the business needs and what technology delivers — through precise requirements, structured analysis, and human-centered delivery.",
-    sn1:'25+',sl1:'Years of BA Excellence', sn2:'60+',sl2:'Projects Delivered',
-    sn3:'8',sl3:'Industries Served', sn4:'$2M+',sl4:'Documented Cost Savings'
-  },
-  valueprops: [
-    { num:'01', title:'Requirements Excellence', desc:"I don't just document what stakeholders say — I uncover what they mean, resolve what they've overlooked, and produce requirements that development teams can actually build from. Traceable from vision to validation." },
-    { num:'02', title:'Process Intelligence',    desc:"Every inefficiency is a story waiting to be told. Using BPMN 2.0, value stream mapping, and root-cause analysis, I surface the hidden costs in your workflows and design future-state blueprints that actually stick." },
-    { num:'03', title:'Delivery Transformation', desc:"Agile, SAFe, or hybrid — I align delivery methodology to your culture and maturity. My track record is measured in outcomes: faster velocity, less rework, and stakeholders who trust the process." }
-  ],
-  timeline: [
-    { date:'2021 – Present', role:'Principal Business Systems Analyst', company:'FinTech Innovations Corp · Financial Services', desc:'Led enterprise-wide CRM transformation program. Elicited and managed 600+ requirements across 12 stakeholder groups. Delivered 40% reduction in manual processing through automated workflow design.', highlights:'600+ Requirements,40% Process Reduction,$800K Cost Avoidance' },
-    { date:'2018 – 2021',    role:'Senior Business Analyst',           company:'Government Digital Services · Public Sector',    desc:'Defined system integration strategy for a multi-agency data exchange platform. Facilitated 80+ stakeholder workshops, produced context diagrams and BPMN flows approved by the architecture board.', highlights:'5 Agencies Integrated,80+ Workshops,$1.2M Savings' },
-    { date:'2015 – 2018',    role:'Business Analyst II',               company:'Regional Health Systems · Healthcare',          desc:'Requirements lead on EHR implementation impacting 4,000+ clinicians across 14 departments. Maintained traceability across 900 functional and non-functional requirements.', highlights:'4,000+ Clinicians,900 Requirements,Zero Critical Defects' },
-    { date:'2013 – 2015',    role:'Business Analyst',                  company:'Enterprise Solutions Group · Consulting',       desc:'Supported discovery and documentation across ERP, HRIS, and supply chain engagements. Built foundational competencies in stakeholder elicitation and Agile user story writing.', highlights:'ERP,HRIS,Supply Chain' }
-  ],
-  artifacts: [
-    { id:'a1', category:'Requirements',    title:'Business Requirements Document (BRD)',    desc:'Full-scope BRD with stakeholder register, business objectives, scope boundaries, assumptions, constraints, and functional requirement catalog.', format:'PDF · 28 pages', url:'' },
-    { id:'a2', category:'Requirements',    title:'Requirements Traceability Matrix (RTM)',  desc:'End-to-end traceability from business objectives through functional requirements, test cases, and defects.', format:'XLSX · Interactive', url:'' },
-    { id:'a3', category:'Requirements',    title:'Functional Requirements Document (FRD)',  desc:'Detailed FRD with use case specifications and non-functional requirements annex.', format:'PDF · 45 pages', url:'' },
-    { id:'a4', category:'Process Modeling',title:'BPMN 2.0 Swimlane Diagram Set',          desc:'As-is and to-be process models with exception flows and sub-process callouts.', format:'PNG / PDF · Miro Export', url:'' },
-    { id:'a5', category:'Process Modeling',title:'System Context Diagram',                 desc:'Level-0 DFD for a multi-system integration environment.', format:'PNG · Lucidchart Export', url:'' },
-    { id:'a6', category:'Process Modeling',title:'Value Stream Map',                       desc:'Current and future state VSM for a claims processing operation.', format:'PDF · Visio Export', url:'' },
-    { id:'a7', category:'Data Analysis',   title:'Entity-Relationship Diagram (ERD)',      desc:'Logical data model with entity definitions and cardinality notations.', format:'PNG · DB Schema', url:'' },
-    { id:'a8', category:'Data Analysis',   title:'Data Dictionary & Glossary',             desc:'200+ data elements with definitions, ownership, and source system.', format:'XLSX · 200+ Entries', url:'' },
-    { id:'a9', category:'Agile Delivery',  title:'User Story Set with Acceptance Criteria',desc:'Epic-to-story decomposition with Given-When-Then criteria.', format:'Confluence Export · PDF', url:'' },
-    { id:'a10',category:'Agile Delivery',  title:'Agile BA Playbook',                      desc:'BA activities, story writing standards, and DoR/DoD templates.', format:'PDF · 22 pages', url:'' },
-    { id:'a11',category:'Governance',      title:'Business Case Document',                 desc:'Options analysis, cost-benefit analysis, and risk register.', format:'PDF · 18 pages', url:'' },
-    { id:'a12',category:'Governance',      title:'Project Retrospective Report',           desc:'Root cause analysis and improvement action plan.', format:'PDF · 12 pages', url:'' }
-  ],
-  casestudies: [
-    { id:'cs1',industry:'Financial Services · CRM Transformation',title:'Enterprise CRM Modernization — Requirements Program',impact:'40% reduction in manual processing · $800K annual cost avoidance · on-time delivery',tags:'BRD,BPMN,Stakeholder Mgmt,SAFe,RTM',m1_val:'40%',m1_label:'Manual Process Reduction',m2_val:'$800K',m2_label:'Annual Cost Avoidance',m3_val:'600+',m3_label:'Requirements Managed',problem:'A mid-size financial services firm operating on a fragmented CRM ecosystem across 4 business units.',approach:'3-week discovery sprint with 12 stakeholder groups using CATWOE analysis and SIPOC frameworks.',techniques:'Stakeholder interviews · CATWOE · SIPOC · BPMN 2.0 · Gap analysis · MoSCoW · RTM · UAT',outcome:'System went live on schedule with 40% reduction in manual data entry and $800K documented cost avoidance.' },
-    { id:'cs2',industry:'Public Sector · Data Integration',title:'Multi-Agency Data Exchange Platform',impact:'$1.2M identified savings · 60% faster inter-agency reporting · 5 agencies unified',tags:'Context Diagram,Integration Analysis,Workshop Facilitation,ICD',m1_val:'$1.2M',m1_label:'Savings Identified',m2_val:'60%',m2_label:'Faster Reporting',m3_val:'5',m3_label:'Agencies Integrated',problem:'Five government agencies exchanging sensitive data through manual email-based processes.',approach:'Context diagrams, DFDs, ERDs. 80+ workshops across agencies. Data governance charter.',techniques:'Context diagrams · DFDs · ERDs · ICD · Data governance · BPMN',outcome:'60% improvement in inter-agency reporting speed and $1.2M in identified savings.' },
-    { id:'cs3',industry:'Healthcare · EHR Implementation',title:'Clinical Workflow Redesign for EHR Rollout',impact:'4,000+ clinicians onboarded · Zero critical post-go-live defects · 45% fewer change requests',tags:'Data Mapping,ICD,UAT,RTM,HL7',m1_val:'4K+',m1_label:'Clinicians Onboarded',m2_val:'900',m2_label:'Requirements Traced',m3_val:'Zero',m3_label:'Critical Post-Go-Live Defects',problem:'Regional health system replacing legacy clinical system affecting 14 departments and 4,000+ staff.',approach:'Departmental workflow workshops. 900-item RTM aligned to HL7 and regulatory requirements.',techniques:'Workflow workshops · Data mapping · ICD · RTM · UAT scripting · HL7',outcome:'Go-live on schedule with zero critical defects and 45% reduction in change requests.' },
-    { id:'cs4',industry:'Retail · Agile Transformation',title:'Agile Operating Model Adoption',impact:'35% velocity improvement · 50% reduction in backlog ambiguity · 6 teams transformed',tags:'Scrum,Backlog Refinement,Story Mapping,DoR / DoD',m1_val:'35%',m1_label:'Velocity Improvement',m2_val:'50%',m2_label:'Less Backlog Ambiguity',m3_val:'6',m3_label:'Teams Transformed',problem:'Six product teams under Waterfall with no backlog hygiene and frequent mid-sprint scope changes.',approach:'Story mapping workshops, DoR/DoD frameworks, and Given-When-Then criteria templates.',techniques:'Story mapping · DoR · DoD · Given-When-Then · Agile BA Playbook · Training',outcome:'35% velocity improvement and 50% backlog ambiguity reduction within two quarters.' }
-  ],
-  testimonials: [
-    { id:'t1',quote:"Spurgeon brought structure to a deeply ambiguous transformation programme. The BRD and RTM they produced became the north star for our entire delivery team.",author:'Programme Director',role:'Financial Services · CRM Transformation' },
-    { id:'t2',quote:"The BPMN models were the clearest process documentation our architecture board had seen. They became the standard template we use across all future programmes.",author:'Chief Architect',role:'Government Digital Services' },
-    { id:'t3',quote:"Zero critical defects post go-live. That doesn't happen without rigorous requirements management. Spurgeon's traceability work was exceptional.",author:'VP of Technology',role:'Regional Health Systems' }
-  ],
-  settings: {
-    email:'Spurgeon.Thomas@gmail.com', linkedin:'https://linkedin.com/in/spurgeonthomas',
-    github:'https://github.com/spurgeonthomas/Systematicinstitute',
-    calendly:'https://calendly.com/spurgeon-thomas/15min',
-    resume:'https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/Spurgeon%20Thomas%20-%20Master%20Resume%20.pdf',
-    availability:'Currently accepting new consulting engagements.'
-  }
-};
 
-// ── STATE ──
 const STATE = JSON.parse(JSON.stringify(DEFAULTS));
-
-// ── FIREBASE ──
 let db;
+
+// ── FIREBASE INIT ──
 try {
   const app = initializeApp(FB_CFG);
   db = getFirestore(app);
-  const el = document.getElementById('fb-status-sidebar');
-  if(el){ el.textContent='● Firebase Connected'; el.style.color='#6fcf97'; }
+  const el=document.getElementById('fb-status-sidebar');
+  if(el){el.textContent='● Firebase Connected';el.style.color='#6fcf97';}
 } catch(e) {
-  const el = document.getElementById('fb-status-sidebar');
-  if(el){ el.textContent='● Firebase Error: '+e.message; el.style.color='#f4a0a0'; }
-  console.error('Firebase init:', e);
+  const el=document.getElementById('fb-status-sidebar');
+  if(el){el.textContent='● Firebase Error: '+e.message;el.style.color='#f4a0a0';}
+}
+
+let db;
+try {
+  firebase.initializeApp(FB_CFG);
+  db = firebase.firestore();
+  const el=document.getElementById('fb-status-sidebar');
+  if(el){el.textContent='● Firebase Connected';el.style.color='#6fcf97';}
+} catch(e) {
+  const el=document.getElementById('fb-status-sidebar');
+  if(el){el.textContent='● Firebase Error: '+e.message;el.style.color='#f4a0a0';}
+  console.error('Firebase init:',e);
 }
 
 // ── TOAST ──
-function showToast(msg, isError=false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show' + (isError?' error':'');
-  clearTimeout(t._tmr);
-  t._tmr = setTimeout(()=>t.className='', 3800);
+function showToast(msg,isError=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='show'+(isError?' error':'');
+  clearTimeout(t._tmr);t._tmr=setTimeout(()=>t.className='',3800);
 }
 
 // ── AUTH ──
-function doLogin() {
-  const pw = document.getElementById('login-pw').value;
-  const stored = localStorage.getItem('admin_pw') || 'Systematic2026!';
-  if(pw === stored) {
+function doLogin(){
+  const pw=document.getElementById('login-pw').value;
+  const stored=localStorage.getItem('admin_pw')||'Systematic2026!';
+  if(pw===stored){
     document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('admin-app').style.display = 'grid';
-    setTimeout(()=>{ const s=document.getElementById('login-screen'); if(s) s.remove(); }, 500);
-    initAdmin();
+    document.getElementById('admin-app').style.display='grid';
+    setTimeout(()=>{const s=document.getElementById('login-screen');if(s)s.remove();},500);
+    if(typeof initAdmin === 'function') initAdmin();
+    else setTimeout(()=>{ if(typeof initAdmin==='function') initAdmin(); },1000);
   } else {
-    const err = document.getElementById('login-error');
-    err.style.display='block';
+    const err=document.getElementById('login-error');err.style.display='block';
     document.getElementById('login-pw').value='';
-    setTimeout(()=>err.style.display='none', 3000);
+    setTimeout(()=>err.style.display='none',3000);
   }
 }
-function doLogout(){ location.reload(); }
-function changePassword() {
-  const p1=document.getElementById('s-pw1').value, p2=document.getElementById('s-pw2').value;
+function doLogout(){location.reload();}
+function changePassword(){
+  const p1=document.getElementById('s-pw1').value,p2=document.getElementById('s-pw2').value;
   if(!p1){showToast('Enter a new password',true);return;}
   if(p1!==p2){showToast('Passwords do not match',true);return;}
   if(p1.length<8){showToast('Must be at least 8 characters',true);return;}
   localStorage.setItem('admin_pw',p1);
-  document.getElementById('s-pw1').value=''; document.getElementById('s-pw2').value='';
+  document.getElementById('s-pw1').value='';document.getElementById('s-pw2').value='';
   showToast('✓ Password updated');
 }
 
 // ── PANELS ──
-function showPanel(id) {
+function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const nav=document.getElementById('nav-'+id); if(nav) nav.classList.add('active');
+  const nav=document.getElementById('nav-'+id);if(nav)nav.classList.add('active');
+  if(id==='history') loadHistory();
 }
 
 // ── ACCORDION ──
-function toggleAccordion(bodyId, chevId) {
-  const b=document.getElementById(bodyId), c=document.getElementById(chevId);
-  if(b){ b.classList.toggle('open'); if(c) c.classList.toggle('open'); }
+function toggleAccordion(bodyId,chevId){
+  const b=document.getElementById(bodyId),c=document.getElementById(chevId);
+  if(b){b.classList.toggle('open');if(c)c.classList.toggle('open');}
 }
 
-// ── FORM POPULATION ──
-function populateHero(h) {
+// ── RICH TEXT EDITOR ──
+function initRTE(editorId, toolbarId, initialText='') {
+  const tb = document.getElementById(toolbarId);
+  const ed = document.getElementById(editorId);
+  if(!tb||!ed) return;
+  tb.innerHTML = `
+    <button class="rte-btn" title="Bold" onmousedown="event.preventDefault();document.execCommand('bold')"><b>B</b></button>
+    <button class="rte-btn" title="Italic" onmousedown="event.preventDefault();document.execCommand('italic')"><i>I</i></button>
+    <button class="rte-btn" title="Bullet List" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')">≡</button>
+    <button class="rte-btn" title="Clear Formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')">✕</button>`;
+  ed.innerHTML = initialText || '';
+}
+function getRTEValue(editorId) {
+  const ed = document.getElementById(editorId);
+  return ed ? ed.innerHTML : '';
+}
+function setRTEValue(editorId, html) {
+  const ed = document.getElementById(editorId);
+  if(ed) ed.innerHTML = html || '';
+}
+
+// ── LIVE PREVIEW ──
+let previewOpen = false;
+function togglePreview() {
+  const panel = document.getElementById('previewPanel');
+  previewOpen = !previewOpen;
+  panel.classList.toggle('open', previewOpen);
+  if(previewOpen) {
+    document.getElementById('previewFrame').src = 'https://spurgeonthomas.github.io/Systematicinstitute/?t='+Date.now();
+  }
+}
+
+// ── VERSION HISTORY ──
+async function saveVersion(section, data) {
+  if(!db) return;
+  try {
+    await db.collection('siteHistory').add({
+      section, data,
+      savedAt: new Date().toISOString(),
+      ts: Date.now()
+    });
+  } catch(e){ console.warn('Version save failed:',e.message); }
+}
+async function loadHistory() {
+  const list = document.getElementById('version-list');
+  if(!list) return;
+  if(!db){list.innerHTML='<div class="version-empty">Firebase not connected</div>';return;}
+  list.innerHTML='<div class="version-empty">Loading…</div>';
+  try {
+    const snap = await db.collection('siteHistory').orderBy('ts','desc').limit(20).get();
+    if(snap.empty){list.innerHTML='<div class="version-empty">No saved versions yet. Every time you save a section, a snapshot is stored here.</div>';return;}
+    list.innerHTML = snap.docs.map(d=>{
+      const v=d.data();
+      const dt=new Date(v.savedAt);
+      const label=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' at '+dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="version-item">
+        <div class="version-meta">
+          <div class="version-section">${v.section}</div>
+          <div class="version-ts">${label}</div>
+        </div>
+        <button class="btn btn-restore btn-sm" onclick="restoreVersion('${d.id}','${v.section}')">Restore</button>
+      </div>`;
+    }).join('');
+  } catch(e){ list.innerHTML=`<div class="version-empty">Error loading history: ${e.message}</div>`; }
+}
+async function restoreVersion(docId, section) {
+  if(!confirm(`Restore this version of "${section}"? Your current version will be replaced.`)) return;
+  if(!db) return;
+  try {
+    const snap = await db.collection('siteHistory').doc(docId).get();
+    if(!snap.exists()){showToast('Version not found',true);return;}
+    const {data} = snap.data();
+    await db.collection('siteContent').doc(section).set({data, updatedAt:new Date().toISOString()});
+    STATE[section]=data;
+    // Re-populate relevant form
+    if(section==='hero') populateHero(data);
+    else if(section==='valueprops') populateValueProps(data);
+    else if(section==='timeline') renderTimeline(data);
+    else if(section==='artifacts') renderArtifacts(data);
+    else if(section==='casestudies') renderCaseStudies(data);
+    else if(section==='testimonials') renderTestimonials(data);
+    else if(section==='settings') populateSettings(data);
+    else if(section==='navsection') populateNav(data);
+    else if(section==='expertise') renderExpertise(data);
+    else if(section==='services') renderServices(data);
+    else if(section==='footer') populateFooter(data);
+    showToast(`✓ ${section} restored to ${new Date(snap.data().savedAt).toLocaleTimeString()}`);
+  } catch(e){ showToast('Restore failed: '+e.message,true); }
+}
+
+// ── POPULATION FUNCTIONS ──
+function populateHero(h){
   const d=DEFAULTS.hero;
   ['eyebrow','line1','line2','line3','desc'].forEach(k=>{
-    const el=document.getElementById('h-'+k); if(el) el.value=h[k]||d[k]||'';
+    const el=document.getElementById('h-'+k);if(el)el.value=h[k]||d[k]||'';
   });
   for(let i=1;i<=4;i++){
-    const en=document.getElementById('sn'+i), el=document.getElementById('sl'+i);
-    if(en) en.value=h['sn'+i]||d['sn'+i]||'';
-    if(el) el.value=h['sl'+i]||d['sl'+i]||'';
+    const en=document.getElementById('sn'+i),el=document.getElementById('sl'+i);
+    if(en)en.value=h['sn'+i]||d['sn'+i]||'';
+    if(el)el.value=h['sl'+i]||d['sl'+i]||'';
   }
 }
-function populateValueProps(vps) {
+function populateValueProps(vps){
   for(let i=0;i<3;i++){
-    const v=vps[i]||{}, d=DEFAULTS.valueprops[i]||{};
-    const t=document.getElementById('vp'+(i+1)+'-title'), desc=document.getElementById('vp'+(i+1)+'-desc');
-    if(t) t.value=v.title||d.title||'';
-    if(desc) desc.value=v.desc||d.desc||'';
+    const v=vps[i]||{},d=DEFAULTS.valueprops[i]||{};
+    const t=document.getElementById('vp'+(i+1)+'-title');
+    if(t)t.value=v.title||d.title||'';
+    setRTEValue('rte-vp'+(i+1), v.desc||d.desc||'');
   }
 }
-function populateSettings(s) {
+function populateSettings(s){
   const d=DEFAULTS.settings;
   ['email','linkedin','github','calendly','resume','availability'].forEach(k=>{
-    const el=document.getElementById('s-'+k); if(el) el.value=s[k]||d[k]||'';
+    const el=document.getElementById('s-'+k);if(el)el.value=s[k]||d[k]||'';
   });
 }
+function populateNav(n){
+  const d=DEFAULTS.navsection;
+  ['logoName','logoSpan','logoSub','ctaUrl','pageTitle'].forEach(k=>{
+    const el=document.getElementById('nav-'+k.replace(/([A-Z])/g,'-$1').toLowerCase());
+    if(el)el.value=n[k]||d[k]||'';
+  });
+}
+function populateFooter(f){
+  const d=DEFAULTS.footer;
+  const bd=document.getElementById('footer-brand-desc');if(bd)bd.value=f.brandDesc||d.brandDesc||'';
+  const cp=document.getElementById('footer-copy');if(cp)cp.value=f.copy||d.copy||'';
+  const co=document.getElementById('footer-compliance');if(co)co.value=f.compliance||d.compliance||'';
+}
 
-// ── RENDERS ──
-function renderTimeline(tl) {
-  const list=document.getElementById('timeline-list'); if(!list) return;
+// ── TAG EDITOR ──
+function renderTagEditor(containerId, tags) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const tagsArr = Array.isArray(tags) ? [...tags] : [];
+  function rebuild(){
+    el.innerHTML = tagsArr.map((t,i)=>`<span class="tag-chip">${t}<span class="tag-chip-remove" onclick="removeTag('${containerId}',${i})">×</span></span>`).join('')
+      + `<input class="tag-input" placeholder="Add skill…" onkeydown="handleTagInput(event,'${containerId}')"/>`;
+  }
+  rebuild();
+  el._tags = tagsArr;
+  el._rebuild = rebuild;
+}
+function handleTagInput(e,containerId){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    const val=e.target.value.trim().replace(/,$/,'');
+    if(val){
+      document.getElementById(containerId)._tags.push(val);
+      document.getElementById(containerId)._rebuild();
+    }
+  }
+}
+function removeTag(containerId,idx){
+  const el=document.getElementById(containerId);
+  el._tags.splice(idx,1);
+  el._rebuild();
+}
+function getTagsFromEditor(containerId){
+  return document.getElementById(containerId)?._tags||[];
+}
+
+// ── RENDER FUNCTIONS ──
+function renderTimeline(tl){
+  const list=document.getElementById('timeline-list');if(!list)return;
   list.innerHTML=tl.map((t,i)=>`
     <div class="accordion-item">
       <div class="accordion-header" onclick="toggleAccordion('tl-body-${i}','tl-chev-${i}')">
@@ -542,8 +776,8 @@ function renderTimeline(tl) {
       </div>
     </div>`).join('');
 }
-function renderArtifacts(arts) {
-  const list=document.getElementById('artifacts-list'); if(!list) return;
+function renderArtifacts(arts){
+  const list=document.getElementById('artifacts-list');if(!list)return;
   list.innerHTML=arts.map((a,i)=>`
     <div class="accordion-item">
       <div class="accordion-header" onclick="toggleAccordion('ab-${i}','ac-${i}')">
@@ -566,10 +800,9 @@ function renderArtifacts(arts) {
           <div class="field"><label>Format</label><input type="text" value="${a.format||''}" onchange="STATE.artifacts[${i}].format=this.value"/></div>
           <div class="field form-full"><label>Title</label><input type="text" value="${a.title||''}" onchange="STATE.artifacts[${i}].title=this.value"/></div>
           <div class="field form-full"><label>Description</label><textarea rows="2" onchange="STATE.artifacts[${i}].desc=this.value">${a.desc||''}</textarea></div>
-          <div class="field form-full">
-            <label>Download URL</label>
+          <div class="field form-full"><label>Download URL</label>
             <div style="display:flex;gap:.75rem;align-items:center">
-              <input type="url" value="${a.url||''}" placeholder="https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/..." onchange="STATE.artifacts[${i}].url=this.value" style="flex:1;padding:.72rem 1rem;border:1px solid var(--rule);background:var(--paper);font-size:.875rem;outline:none;font-family:'Inter',sans-serif"/>
+              <input type="url" value="${a.url||''}" placeholder="https://raw.githubusercontent.com/…" onchange="STATE.artifacts[${i}].url=this.value" style="flex:1;padding:.72rem 1rem;border:1px solid var(--rule);background:var(--paper);font-size:.875rem;outline:none;font-family:'Inter',sans-serif"/>
               ${a.url?`<a href="${a.url}" target="_blank" class="preview-link">Test ↗</a>`:''}
             </div>
           </div>
@@ -577,8 +810,8 @@ function renderArtifacts(arts) {
       </div>
     </div>`).join('');
 }
-function renderCaseStudies(cs) {
-  const list=document.getElementById('casestudies-list'); if(!list) return;
+function renderCaseStudies(cs){
+  const list=document.getElementById('casestudies-list');if(!list)return;
   list.innerHTML=cs.map((c,i)=>`
     <div class="accordion-item">
       <div class="accordion-header" onclick="toggleAccordion('cb-${i}','cc-${i}')">
@@ -613,8 +846,8 @@ function renderCaseStudies(cs) {
       </div>
     </div>`).join('');
 }
-function renderTestimonials(ts) {
-  const list=document.getElementById('testimonials-list'); if(!list) return;
+function renderTestimonials(ts){
+  const list=document.getElementById('testimonials-list');if(!list)return;
   list.innerHTML=ts.map((t,i)=>`
     <div class="card">
       <div class="card-header">
@@ -628,96 +861,146 @@ function renderTestimonials(ts) {
       </div>
     </div>`).join('');
 }
-function updateDashboard() {
-  document.getElementById('d-artifacts').textContent    = STATE.artifacts.length;
-  document.getElementById('d-casestudies').textContent  = STATE.casestudies.length;
-  document.getElementById('d-testimonials').textContent = STATE.testimonials.length;
-  if(db) {
-    getDocs(collection(db,'contactMessages'))
-      .then(s=>document.getElementById('d-messages').textContent=s.size)
-      .catch(()=>document.getElementById('d-messages').textContent='—');
-  }
+function renderExpertise(cats){
+  const list=document.getElementById('expertise-list');if(!list)return;
+  list.innerHTML=cats.map((c,i)=>`
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">${c.category}</div>
+        <button class="btn btn-danger btn-sm" onclick="removeExpertiseCat(${i})">Remove</button>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Category Name</label><input type="text" value="${c.category||''}" onchange="STATE.expertise[${i}].category=this.value"/></div>
+        <div class="field"><label>Count Label <span class="field-hint">e.g. 9 competencies</span></label><input type="text" value="${c.count||''}" onchange="STATE.expertise[${i}].count=this.value"/></div>
+      </div>
+      <div class="field"><label>Skills <span class="field-hint">type + Enter to add, click × to remove</span></label>
+        <div class="tag-input-wrap" id="tag-cat-${i}" onclick="this.querySelector('.tag-input')?.focus()"></div>
+      </div>
+    </div>`).join('');
+  // Init tag editors after render
+  cats.forEach((c,i)=>renderTagEditor('tag-cat-'+i, c.tags||[]));
+}
+function renderServices(svcs){
+  const list=document.getElementById('services-list');if(!list)return;
+  list.innerHTML=svcs.map((s,i)=>`
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('sb-${i}','sc-${i}')">
+        <div class="accordion-header-left">
+          <span class="accordion-index">${s.icon||'◐'}</span>
+          <div><div class="accordion-name">${s.title||'Service'}</div></div>
+        </div>
+        <div class="accordion-actions">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();removeService(${i})">Remove</button>
+          <span class="accordion-chevron" id="sc-${i}">▼</span>
+        </div>
+      </div>
+      <div class="accordion-body" id="sb-${i}">
+        <div class="form-grid">
+          <div class="field"><label>Icon <span class="field-hint">emoji</span></label><input type="text" value="${s.icon||''}" onchange="STATE.services[${i}].icon=this.value" style="font-size:1.4rem;text-align:center"/></div>
+          <div class="field"><label>Title</label><input type="text" value="${s.title||''}" onchange="STATE.services[${i}].title=this.value"/></div>
+          <div class="field form-full"><label>Description</label><textarea rows="3" onchange="STATE.services[${i}].desc=this.value">${s.desc||''}</textarea></div>
+          <div class="field form-full"><label>Tags <span class="field-hint">comma separated</span></label><input type="text" value="${s.tags||''}" onchange="STATE.services[${i}].tags=this.value"/></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function updateDashboard(){
+  document.getElementById('d-artifacts').textContent=STATE.artifacts.length;
+  document.getElementById('d-casestudies').textContent=STATE.casestudies.length;
+  document.getElementById('d-testimonials').textContent=STATE.testimonials.length;
+  if(db){db.collection('contactMessages').get().then(s=>document.getElementById('d-messages').textContent=s.size).catch(()=>document.getElementById('d-messages').textContent='—');}
 }
 
-// ── SAVE — direct Firebase calls, no bridge ──
-async function fbSave(section, data) {
-  if(!db) throw new Error('Firebase not initialized');
-  await setDoc(doc(db,'siteContent',section), { data, updatedAt: new Date().toISOString() });
+// ── FIREBASE SAVE ──
+async function fbSave(section,data){
+  if(!db)throw new Error('Firebase not initialized');
+  await db.collection('siteContent').doc(section).set({data,updatedAt:new Date().toISOString()});
+  await saveVersion(section,data);
 }
-async function runSave(btnId, section, data) {
+async function runSave(btnId,section,data){
   const btn=document.getElementById(btnId);
   const orig=btn.textContent;
-  btn.textContent='Saving…'; btn.disabled=true;
-  try {
-    await fbSave(section, data);
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    await fbSave(section,data);
     STATE[section]=data;
-    btn.textContent='✓ Saved'; btn.disabled=false;
-    setTimeout(()=>btn.textContent=orig, 2500);
+    btn.textContent='✓ Saved';btn.disabled=false;
+    setTimeout(()=>btn.textContent=orig,2500);
     showToast('✓ '+section+' saved — live site updated.');
-  } catch(e) {
-    btn.textContent=orig; btn.disabled=false;
-    showToast('Save failed: '+e.message, true);
-    console.error('Save error:',e);
+  }catch(e){
+    btn.textContent=orig;btn.disabled=false;
+    showToast('Save failed: '+e.message,true);
   }
 }
 
 // ── INDIVIDUAL SAVERS ──
-async function saveHero() {
+async function saveHero(){
   await runSave('save-hero','hero',{
     eyebrow:document.getElementById('h-eyebrow').value,
-    line1:document.getElementById('h-line1').value,
-    line2:document.getElementById('h-line2').value,
-    line3:document.getElementById('h-line3').value,
+    line1:document.getElementById('h-line1').value,line2:document.getElementById('h-line2').value,line3:document.getElementById('h-line3').value,
     desc:document.getElementById('h-desc').value,
-    sn1:document.getElementById('sn1').value, sl1:document.getElementById('sl1').value,
-    sn2:document.getElementById('sn2').value, sl2:document.getElementById('sl2').value,
-    sn3:document.getElementById('sn3').value, sl3:document.getElementById('sl3').value,
-    sn4:document.getElementById('sn4').value, sl4:document.getElementById('sl4').value
+    sn1:document.getElementById('sn1').value,sl1:document.getElementById('sl1').value,
+    sn2:document.getElementById('sn2').value,sl2:document.getElementById('sl2').value,
+    sn3:document.getElementById('sn3').value,sl3:document.getElementById('sl3').value,
+    sn4:document.getElementById('sn4').value,sl4:document.getElementById('sl4').value
   });
 }
-async function saveValueProps() {
+async function saveValueProps(){
   await runSave('save-valueprops','valueprops',[1,2,3].map(i=>({
     num:'0'+i,
     title:document.getElementById('vp'+i+'-title').value,
-    desc:document.getElementById('vp'+i+'-desc').value
+    desc:getRTEValue('rte-vp'+i)
   })));
 }
-async function saveTimeline()    { await runSave('save-timeline','timeline', STATE.timeline); }
-async function saveArtifacts()   { await runSave('save-artifacts','artifacts', STATE.artifacts); }
-async function saveCaseStudies() { await runSave('save-casestudies','casestudies', STATE.casestudies); }
-async function saveTestimonials(){ await runSave('save-testimonials','testimonials', STATE.testimonials); }
-async function saveSettings() {
+async function saveTimeline(){await runSave('save-timeline','timeline',STATE.timeline);}
+async function saveArtifacts(){await runSave('save-artifacts','artifacts',STATE.artifacts);}
+async function saveCaseStudies(){await runSave('save-casestudies','casestudies',STATE.casestudies);}
+async function saveTestimonials(){await runSave('save-testimonials','testimonials',STATE.testimonials);}
+async function saveSettings(){
   await runSave('save-settings','settings',{
-    email:document.getElementById('s-email').value,
-    linkedin:document.getElementById('s-linkedin').value,
-    github:document.getElementById('s-github').value,
-    calendly:document.getElementById('s-calendly').value,
-    resume:document.getElementById('s-resume').value,
-    availability:document.getElementById('s-availability').value
+    email:document.getElementById('s-email').value,linkedin:document.getElementById('s-linkedin').value,
+    github:document.getElementById('s-github').value,calendly:document.getElementById('s-calendly').value,
+    resume:document.getElementById('s-resume').value,availability:document.getElementById('s-availability').value
+  });
+}
+async function saveNav(){
+  await runSave('save-nav','navsection',{
+    logoName:document.getElementById('nav-logo-name').value,
+    logoSpan:document.getElementById('nav-logo-span').value,
+    logoSub:document.getElementById('nav-logo-sub').value,
+    ctaUrl:document.getElementById('nav-cta-url').value,
+    pageTitle:document.getElementById('nav-page-title').value
+  });
+}
+async function saveExpertise(){
+  // Collect tag editor data back into STATE
+  STATE.expertise.forEach((c,i)=>{c.tags=getTagsFromEditor('tag-cat-'+i);});
+  await runSave('save-expertise','expertise',STATE.expertise);
+}
+async function saveServices(){await runSave('save-services','services',STATE.services);}
+async function saveFooter(){
+  await runSave('save-footer','footer',{
+    brandDesc:document.getElementById('footer-brand-desc').value,
+    copy:document.getElementById('footer-copy').value,
+    compliance:document.getElementById('footer-compliance').value
   });
 }
 
 // ── ADD / REMOVE ──
-function addArtifact() {
-  STATE.artifacts.push({id:'a'+Date.now(),category:'Requirements',title:'New Artifact',desc:'',format:'PDF',url:''});
-  renderArtifacts(STATE.artifacts);
-}
-function removeArtifact(i) {
-  if(!confirm('Remove this artifact?')) return;
-  STATE.artifacts.splice(i,1); renderArtifacts(STATE.artifacts);
-}
-function addTestimonial() {
-  STATE.testimonials.push({id:'t'+Date.now(),quote:'',author:'',role:''});
-  renderTestimonials(STATE.testimonials);
-}
-function removeTestimonial(i) {
-  if(!confirm('Remove?')) return;
-  STATE.testimonials.splice(i,1); renderTestimonials(STATE.testimonials);
-}
+function addArtifact(){STATE.artifacts.push({id:'a'+Date.now(),category:'Requirements',title:'New Artifact',desc:'',format:'PDF',url:''});renderArtifacts(STATE.artifacts);}
+function removeArtifact(i){if(!confirm('Remove?'))return;STATE.artifacts.splice(i,1);renderArtifacts(STATE.artifacts);}
+function addTestimonial(){STATE.testimonials.push({id:'t'+Date.now(),quote:'',author:'',role:''});renderTestimonials(STATE.testimonials);}
+function removeTestimonial(i){if(!confirm('Remove?'))return;STATE.testimonials.splice(i,1);renderTestimonials(STATE.testimonials);}
+function addService(){STATE.services.push({icon:'◐',title:'New Service',desc:'',tags:''});renderServices(STATE.services);}
+function removeService(i){if(!confirm('Remove?'))return;STATE.services.splice(i,1);renderServices(STATE.services);}
+function removeExpertiseCat(i){if(!confirm('Remove this skill category?'))return;STATE.expertise.splice(i,1);renderExpertise(STATE.expertise);}
 
 // ── INIT ──
-async function initAdmin() {
-  // 1. Pre-fill everything with defaults immediately
+async function initAdmin(){
+  // Init RTEs
+  [1,2,3].forEach(i=>initRTE('rte-vp'+i,'rte-vp'+i+'-tb'));
+
+  // Pre-fill with defaults
   populateHero(DEFAULTS.hero);
   populateValueProps(DEFAULTS.valueprops);
   renderTimeline(DEFAULTS.timeline);
@@ -725,24 +1008,28 @@ async function initAdmin() {
   renderCaseStudies(DEFAULTS.casestudies);
   renderTestimonials(DEFAULTS.testimonials);
   populateSettings(DEFAULTS.settings);
+  populateNav(DEFAULTS.navsection);
+  renderExpertise(DEFAULTS.expertise);
+  renderServices(DEFAULTS.services);
+  populateFooter(DEFAULTS.footer);
   updateDashboard();
 
-  // 2. Load from Firestore and overwrite
-  if(!db) { showToast('Firebase not connected — working in offline mode', true); return; }
-  const sections = ['hero','valueprops','timeline','artifacts','casestudies','testimonials','settings'];
+  if(!db){showToast('Firebase not connected',true);return;}
+
+  const allSections=['hero','valueprops','timeline','artifacts','casestudies','testimonials','settings','navsection','expertise','services','footer'];
   let loaded=0;
-  for(const s of sections) {
-    try {
-      const snap = await getDoc(doc(db,'siteContent',s));
-      if(snap.exists()) {
-        const raw = snap.data();
-        const d = (raw && raw.data !== undefined) ? raw.data : raw;
-        STATE[s] = d;
+  for(const s of allSections){
+    try{
+      const snap=await db.collection('siteContent').doc(s).get();
+      if(snap.exists()){
+        const raw=snap.data();
+        STATE[s]=(raw&&raw.data!==undefined)?raw.data:raw;
         loaded++;
       }
-    } catch(e) { console.warn('Load',s,e.message); }
+    }catch(e){console.warn('Load',s,e.message);}
   }
-  // 3. Re-populate with Firestore data
+
+  // Re-populate with Firestore data
   populateHero(STATE.hero);
   populateValueProps(STATE.valueprops);
   renderTimeline(STATE.timeline);
@@ -750,21 +1037,31 @@ async function initAdmin() {
   renderCaseStudies(STATE.casestudies);
   renderTestimonials(STATE.testimonials);
   populateSettings(STATE.settings);
+  populateNav(STATE.navsection);
+  renderExpertise(STATE.expertise);
+  renderServices(STATE.services);
+  populateFooter(STATE.footer);
   updateDashboard();
 
   const el=document.getElementById('fb-status-sidebar');
-  if(el) el.textContent = loaded>0 ? `● Loaded ${loaded} sections from Firestore` : '● Connected — no saved data yet';
-  if(el) el.style.color = '#6fcf97';
+  if(el){el.textContent=`● Loaded ${loaded}/${allSections.length} sections`;el.style.color='#6fcf97';}
 }
 
-// ── EXPOSE TO HTML onclick ──
-window.doLogin=doLogin; window.doLogout=doLogout; window.changePassword=changePassword;
-window.showPanel=showPanel; window.toggleAccordion=toggleAccordion;
-window.addArtifact=addArtifact; window.removeArtifact=removeArtifact;
-window.addTestimonial=addTestimonial; window.removeTestimonial=removeTestimonial;
-window.saveHero=saveHero; window.saveValueProps=saveValueProps; window.saveTimeline=saveTimeline;
-window.saveArtifacts=saveArtifacts; window.saveCaseStudies=saveCaseStudies;
-window.saveTestimonials=saveTestimonials; window.saveSettings=saveSettings;
+// ── EXPOSE ──
+window.initAdmin=initAdmin;
+window.doLogin=doLogin;window.doLogout=doLogout;window.changePassword=changePassword;
+window.showPanel=showPanel;window.toggleAccordion=toggleAccordion;
+window.togglePreview=togglePreview;window.loadHistory=loadHistory;window.restoreVersion=restoreVersion;
+window.addArtifact=addArtifact;window.removeArtifact=removeArtifact;
+window.addTestimonial=addTestimonial;window.removeTestimonial=removeTestimonial;
+window.addService=addService;window.removeService=removeService;
+window.removeExpertiseCat=removeExpertiseCat;
+window.handleTagInput=handleTagInput;window.removeTag=removeTag;
+window.saveHero=saveHero;window.saveValueProps=saveValueProps;window.saveTimeline=saveTimeline;
+window.saveArtifacts=saveArtifacts;window.saveCaseStudies=saveCaseStudies;
+window.saveTestimonials=saveTestimonials;window.saveSettings=saveSettings;
+window.saveNav=saveNav;window.saveExpertise=saveExpertise;
+window.saveServices=saveServices;window.saveFooter=saveFooter;
 window.STATE=STATE;
 </script>
 </body>
