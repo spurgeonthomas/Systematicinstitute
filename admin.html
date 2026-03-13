@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Site Admin — Spurgeon Thomas Jr</title>
+<title>Site Admin — Systematic Institute</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{--ink:#111318;--paper:#faf8f4;--cream:#f0ece3;--gold:#b8924a;--gold-light:#d4ac6a;--gold-pale:#f5ead6;--teal:#1e3d4f;--mid:#6e6b65;--soft:#9e9b95;--rule:#ddd8ce;--red:#a03030;--green:#2d6a4f;--shadow:0 4px 24px rgba(17,19,24,.08);--t:all .25s cubic-bezier(.4,0,.2,1)}
@@ -505,6 +505,23 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
+// Expose login early so HTML onclick works before rest of script runs
+window.doLogin = function() {
+  const pw = document.getElementById('login-pw').value;
+  const stored = localStorage.getItem('admin_pw') || 'Systematic2026!';
+  if(pw === stored) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-app').style.display = 'grid';
+    setTimeout(()=>{ const s=document.getElementById('login-screen'); if(s)s.remove(); }, 500);
+    if(typeof initAdmin==='function') initAdmin();
+    else { const t=setInterval(()=>{ if(typeof initAdmin==='function'){clearInterval(t);initAdmin();} },100); }
+  } else {
+    const err=document.getElementById('login-error'); err.style.display='block';
+    document.getElementById('login-pw').value='';
+    setTimeout(()=>err.style.display='none',3000);
+  }
+};
+
 const FB_CFG = {
   apiKey:"AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
   authDomain:"systematic-institute.firebaseapp.com",
@@ -517,19 +534,6 @@ const FB_CFG = {
 
 
 const STATE = JSON.parse(JSON.stringify(DEFAULTS));
-let db;
-
-// ── FIREBASE INIT ──
-try {
-  const app = initializeApp(FB_CFG);
-  db = getFirestore(app);
-  const el=document.getElementById('fb-status-sidebar');
-  if(el){el.textContent='● Firebase Connected';el.style.color='#6fcf97';}
-} catch(e) {
-  const el=document.getElementById('fb-status-sidebar');
-  if(el){el.textContent='● Firebase Error: '+e.message;el.style.color='#f4a0a0';}
-}
-
 let db;
 try {
   firebase.initializeApp(FB_CFG);
