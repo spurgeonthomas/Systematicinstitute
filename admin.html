@@ -112,6 +112,13 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
 .instructions-box li{font-size:.85rem;color:var(--mid);line-height:1.7;margin-bottom:.3rem}
 .instructions-box li strong{color:var(--ink);font-weight:500}
 .instructions-box code{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:rgba(184,146,74,.12);padding:.1rem .35rem;color:var(--teal)}
+
+/* Validation */
+.field input.invalid,.field textarea.invalid,.field select.invalid{border-color:var(--red)!important;background:#fdf8f8!important;box-shadow:0 0 0 3px rgba(160,48,48,.08)!important}
+.field-error{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--red);letter-spacing:.04em;margin-top:.25rem;display:none}
+.field-error.show{display:block}
+.field input.valid{border-color:#2d6a4f!important}
+
 /* Rich text editor */
 .rte-wrap{border:1px solid var(--rule);background:var(--paper);transition:var(--t)}
 .rte-wrap:focus-within{border-color:var(--gold);background:white;box-shadow:0 0 0 3px rgba(184,146,74,.08)}
@@ -204,6 +211,7 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       <div class="nav-item" onclick="showPanel('history')" id="nav-history"><span class="ico">⟳</span>Version History</div>
       <div class="nav-item" onclick="togglePreview()" id="nav-preview"><span class="ico">👁</span>Live Preview</div>
       <div class="nav-item" onclick="showPanel('settings')" id="nav-settings"><span class="ico">⚙</span>Settings</div>
+      <div class="nav-item" onclick="showPanel('help')" id="nav-help"><span class="ico">?</span>How To Use</div>
       <a class="nav-item" href="https://spurgeonthomas.github.io/Systematicinstitute/" target="_blank"><span class="ico">↗</span>View Live Site</a>
     </div>
     <div class="sidebar-footer">
@@ -499,29 +507,154 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       </div>
     </div>
 
+
+    <!-- HELP / INSTRUCTIONS -->
+    <div class="panel" id="panel-help">
+      <div class="panel-header">
+        <div class="panel-eyebrow"><span>Documentation</span></div>
+        <h1 class="panel-title">How To Use This CMS</h1>
+        <p class="panel-desc">A complete guide to managing every section of your portfolio site.</p>
+      </div>
+
+      <div class="instructions-box">
+        <h4>Quick Start — 3 Steps</h4>
+        <ol>
+          <li>Click any section in the <strong>left sidebar</strong> (Hero, Value Props, Timeline, etc.)</li>
+          <li><strong>Edit the fields</strong> — all content is pre-filled from your current live site</li>
+          <li>Click <strong>Save Changes</strong> — your live site updates <strong>instantly</strong>, no redeploy needed</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hero & Stats</div><div class="card-badge">Top of page</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Controls the very top section of your portfolio — the headline, description, and four stat blocks (25+, 60+, 8, $2M+).</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li><strong>Eyebrow Text</strong> — the small gold label above the headline</li>
+          <li><strong>Headline Lines 1–3</strong> — the large headline split across three lines. Line 2 is italic gold, Line 3 is bold.</li>
+          <li><strong>Description</strong> — the paragraph below the headline. Use **bold** to bold any text.</li>
+          <li><strong>Stats 1–4</strong> — each stat has a Number (e.g. 25+) and a Label (e.g. Years of BA Excellence)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Value Props</div><div class="card-badge">Dark band section</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">The three dark cards beneath the hero — "What I Bring To Every Engagement". Each has a Title and a Description.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>The description fields support <strong>Bold</strong>, <em>Italic</em>, and bullet lists using the toolbar buttons</li>
+          <li>Click inside the description box, then use the B / I / ≡ buttons in the toolbar</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Career Timeline</div><div class="card-badge">Career section</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Your four career milestones shown as a vertical timeline.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>Click the <strong>arrow ▼</strong> on any entry to expand it and edit</li>
+          <li><strong>Highlight Tags</strong> — comma-separated tags shown as pills (e.g. <code>600+ Requirements,40% Process Reduction</code>)</li>
+          <li>Click <strong>Save Changes</strong> after editing any entry</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Artifacts</div><div class="card-badge">Portfolio downloads</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Your 12 downloadable BA documents. The most important field is the <strong>Download URL</strong>.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li><strong>Step 1:</strong> Upload your PDF or XLSX to GitHub at <code>github.com/spurgeonthomas/Systematicinstitute</code> → Add file → Upload files</li>
+          <li><strong>Step 2:</strong> Get the raw URL by clicking your file, then clicking "Raw" — copy the URL from the browser bar</li>
+          <li><strong>Step 3:</strong> Paste the URL into the Download URL field for that artifact</li>
+          <li><strong>Step 4:</strong> Click the <strong>Test ↗</strong> link to confirm it opens, then click <strong>Save All</strong></li>
+          <li>Raw URL format: <code>https://raw.githubusercontent.com/spurgeonthomas/Systematicinstitute/main/YOUR-FILE.pdf</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Case Studies</div><div class="card-badge">Selected work</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Your four project case studies. Each has a card view and a full modal (popup) with detailed content.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>Click the <strong>arrow ▼</strong> to expand a case study</li>
+          <li><strong>Card Display</strong> — Industry, Title, Impact Line, and Tags shown on the card</li>
+          <li><strong>Metrics</strong> — three numbers shown at the top of the modal (e.g. 40%, $800K, 600+)</li>
+          <li><strong>Modal Body</strong> — Problem, Approach, Techniques, Outcome shown in the popup detail view</li>
+          <li>Click <strong>Save All</strong> when done</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Testimonials</div><div class="card-badge">Client voices</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">The three client quote cards. Edit the quote text, author name, and their role/company.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>Click <strong>+ Add</strong> to add a new testimonial card</li>
+          <li>Click <strong>Remove</strong> to delete one (minimum 1 required)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Nav & Logo</div><div class="card-badge">Navigation bar</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Controls the top navigation bar — logo name, the italic gold highlight, the small BSA badge, and the Book a Call button URL.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li><strong>Browser Tab Title</strong> — what appears in the browser tab and search engine results</li>
+          <li>After saving, the portfolio will update the next time it loads</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Expertise</div><div class="card-badge">Skills section</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Your five skill categories and their tags (BRD, BPMN 2.0, Scrum, etc.)</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>To <strong>add a skill tag</strong> — click in the tag box and type the skill name, then press <strong>Enter</strong></li>
+          <li>To <strong>remove a tag</strong> — click the <strong>×</strong> next to it</li>
+          <li>You can also edit the category name and count label (e.g. "9 competencies")</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Services</div><div class="card-badge">Consulting offerings</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Your six consulting service cards — icon, title, description, and tags.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>The <strong>Icon</strong> field accepts any emoji — click it and type or paste an emoji</li>
+          <li><strong>Tags</strong> are comma-separated and appear as small pills on the card</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Version History</div><div class="card-badge">Undo / restore</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Every time you click Save, a snapshot of that section is stored automatically.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>Go to <strong>Version History</strong> in the sidebar to see all past saves</li>
+          <li>Click <strong>Restore</strong> on any version to roll that section back to that point in time</li>
+          <li>The live site updates immediately when you restore</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Live Preview</div><div class="card-badge">See changes live</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Opens your live portfolio in a side panel so you can see it alongside the editor.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li>Click <strong>👁 Live Preview</strong> in the sidebar to open/close the panel</li>
+          <li>After saving a section, the preview will refresh to show the updated content</li>
+          <li>Note: GitHub Pages can take 30–60 seconds to propagate changes</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Settings</div><div class="card-badge">Contact & password</div></div>
+        <p style="font-size:.875rem;color:var(--mid);line-height:1.75;margin-bottom:1rem">Update your contact links and change your admin password.</p>
+        <ul style="font-size:.85rem;color:var(--mid);line-height:1.9;padding-left:1.2rem">
+          <li><strong>Email, LinkedIn, GitHub, Calendly, Resume URL</strong> — these update the links throughout the site</li>
+          <li><strong>Availability Note</strong> — the line that says "Currently accepting new consulting engagements"</li>
+          <li><strong>Change Password</strong> — enter a new password twice and click Update Password. Your new password is saved in this browser.</li>
+          <li>⚠ If you clear your browser data, the password resets to <code>Systematic2026!</code></li>
+        </ul>
+      </div>
+
+    </div>
   </main>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-// Expose login early so HTML onclick works before rest of script runs
-window.doLogin = function() {
-  const pw = document.getElementById('login-pw').value;
-  const stored = localStorage.getItem('admin_pw') || 'Systematic2026!';
-  if(pw === stored) {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('admin-app').style.display = 'grid';
-    setTimeout(()=>{ const s=document.getElementById('login-screen'); if(s)s.remove(); }, 500);
-    if(typeof initAdmin==='function') initAdmin();
-    else { const t=setInterval(()=>{ if(typeof initAdmin==='function'){clearInterval(t);initAdmin();} },100); }
-  } else {
-    const err=document.getElementById('login-error'); err.style.display='block';
-    document.getElementById('login-pw').value='';
-    setTimeout(()=>err.style.display='none',3000);
-  }
-};
-
 const FB_CFG = {
   apiKey:"AIzaSyCt1-v4Ew9cgVDv-aw8Hq4A_A1lqhZfQYw",
   authDomain:"systematic-institute.firebaseapp.com",
@@ -548,12 +681,19 @@ const DEFAULTS = {
 };
 
 const STATE = JSON.parse(JSON.stringify(DEFAULTS));
-let db;
+let db, auth;
 try {
   firebase.initializeApp(FB_CFG);
   db = firebase.firestore();
+  auth = firebase.auth();
   const el=document.getElementById('fb-status-sidebar');
   if(el){el.textContent='● Firebase Connected';el.style.color='#6fcf97';}
+  // Auto-login if already signed in
+  auth.onAuthStateChanged(user => {
+    if(user && document.getElementById('login-screen')) {
+      onAuthSuccess(user);
+    }
+  });
 } catch(e) {
   const el=document.getElementById('fb-status-sidebar');
   if(el){el.textContent='● Firebase Error: '+e.message;el.style.color='#f4a0a0';}
@@ -568,30 +708,72 @@ function showToast(msg,isError=false){
 }
 
 // ── AUTH ──
-function doLogin(){
-  const pw=document.getElementById('login-pw').value;
-  const stored=localStorage.getItem('admin_pw')||'Systematic2026!';
-  if(pw===stored){
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('admin-app').style.display='grid';
-    setTimeout(()=>{const s=document.getElementById('login-screen');if(s)s.remove();},500);
-    if(typeof initAdmin === 'function') initAdmin();
-    else setTimeout(()=>{ if(typeof initAdmin==='function') initAdmin(); },1000);
-  } else {
-    const err=document.getElementById('login-error');err.style.display='block';
-    document.getElementById('login-pw').value='';
-    setTimeout(()=>err.style.display='none',3000);
+const AUTHORIZED_EMAIL = 'Spurgeon.Thomas@gmail.com';
+
+function onAuthSuccess(user) {
+  if(user.email.toLowerCase() !== AUTHORIZED_EMAIL.toLowerCase()) {
+    auth.signOut();
+    const err=document.getElementById('login-error');
+    err.textContent='Access denied: '+user.email+' is not authorized.';
+    err.style.display='block';
+    return;
+  }
+  const screen=document.getElementById('login-screen');
+  if(screen) screen.classList.add('hidden');
+  document.getElementById('admin-app').style.display='grid';
+  const statusEl=document.getElementById('fb-status-sidebar');
+  if(statusEl){statusEl.textContent='● '+user.email;statusEl.style.color='#6fcf97';}
+  setTimeout(()=>{const s=document.getElementById('login-screen');if(s)s.remove();},500);
+  if(typeof initAdmin==='function') initAdmin();
+}
+
+async function doGoogleLogin() {
+  const btn=document.getElementById('login-google-btn');
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({login_hint:AUTHORIZED_EMAIL});
+    const result = await auth.signInWithPopup(provider);
+    onAuthSuccess(result.user);
+  } catch(e) {
+    if(btn){btn.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#fff" d="M9 3.48c1.69 0 2.83.73 3.48 1.34l2.54-2.48C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.96l2.91 2.26C4.6 5.05 6.62 3.48 9 3.48z"/><path fill="#fff" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#fff" d="M3.88 10.78A5.54 5.54 0 0 1 3.58 9c0-.62.11-1.22.29-1.78L.96 4.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l2.92-2.26z"/><path fill="#fff" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.4-1.57-5.12-3.74L.88 13.04C2.36 15.98 5.48 18 9 18z"/></svg> Sign in with Google';btn.disabled=false;}
+    showLoginError('Sign-in failed: '+e.message);
   }
 }
-function doLogout(){location.reload();}
+
+async function doEmailLogin() {
+  const emailEl=document.getElementById('login-email');
+  const pwEl=document.getElementById('login-pw');
+  if(!emailEl||!pwEl)return;
+  const email=emailEl.value.trim(), pw=pwEl.value;
+  if(!email||!pw){showLoginError('Please enter email and password.');return;}
+  try {
+    const result = await auth.signInWithEmailAndPassword(email, pw);
+    onAuthSuccess(result.user);
+  } catch(e) {
+    showLoginError('Sign-in failed: '+e.message);
+  }
+}
+
+function showLoginError(msg) {
+  const err=document.getElementById('login-error');
+  if(err){err.textContent=msg;err.style.display='block';setTimeout(()=>err.style.display='none',6000);}
+}
+function showEmailLogin(){
+  const g=document.getElementById('login-google-wrap'),e=document.getElementById('login-email-wrap');
+  if(g)g.style.display='none';if(e)e.style.display='block';
+}
+function showGoogleLogin(){
+  const g=document.getElementById('login-google-wrap'),e=document.getElementById('login-email-wrap');
+  if(g)g.style.display='block';if(e)e.style.display='none';
+}
+function doLogin(){ doGoogleLogin(); }
+function doLogout(){
+  if(auth) auth.signOut().then(()=>location.reload()).catch(()=>location.reload());
+  else location.reload();
+}
 function changePassword(){
-  const p1=document.getElementById('s-pw1').value,p2=document.getElementById('s-pw2').value;
-  if(!p1){showToast('Enter a new password',true);return;}
-  if(p1!==p2){showToast('Passwords do not match',true);return;}
-  if(p1.length<8){showToast('Must be at least 8 characters',true);return;}
-  localStorage.setItem('admin_pw',p1);
-  document.getElementById('s-pw1').value='';document.getElementById('s-pw2').value='';
-  showToast('✓ Password updated');
+  showToast('Password managed via Firebase Auth. Visit console.firebase.google.com → Authentication to reset.',true);
 }
 
 // ── PANELS ──
@@ -929,6 +1111,62 @@ function updateDashboard(){
   if(db){db.collection('contactMessages').get().then(s=>document.getElementById('d-messages').textContent=s.size).catch(()=>document.getElementById('d-messages').textContent='—');}
 }
 
+
+// ── VALIDATION ──
+function isValidUrl(str) {
+  if(!str) return false;
+  try { new URL(str); return true; } catch(_){ return false; }
+}
+function setFieldError(inputId, msg) {
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  el.classList.add('invalid');
+  let errEl = el.parentNode.querySelector('.field-error');
+  if(!errEl){ errEl=document.createElement('div'); errEl.className='field-error'; el.parentNode.appendChild(errEl); }
+  errEl.textContent = msg; errEl.classList.add('show');
+}
+function clearFieldError(inputId) {
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  el.classList.remove('invalid'); el.classList.add('valid');
+  const errEl = el.parentNode.querySelector('.field-error');
+  if(errEl){ errEl.classList.remove('show'); }
+  setTimeout(()=>el.classList.remove('valid'), 2000);
+}
+function clearAllErrors() {
+  document.querySelectorAll('.invalid').forEach(el=>el.classList.remove('invalid'));
+  document.querySelectorAll('.field-error.show').forEach(el=>el.classList.remove('show'));
+}
+function validateRequired(inputId, label) {
+  const el = document.getElementById(inputId);
+  if(!el) return true;
+  if(!el.value.trim()) { setFieldError(inputId, label+' is required'); return false; }
+  clearFieldError(inputId); return true;
+}
+function validateUrl(inputId, label, required=false) {
+  const el = document.getElementById(inputId);
+  if(!el) return true;
+  const val = el.value.trim();
+  if(!val && !required) { clearFieldError(inputId); return true; }
+  if(!val && required) { setFieldError(inputId, label+' is required'); return false; }
+  if(!isValidUrl(val)) { setFieldError(inputId, label+' must be a valid URL (start with https://)'); return false; }
+  clearFieldError(inputId); return true;
+}
+function validateArtifacts() {
+  let valid = true;
+  STATE.artifacts.forEach((a,i) => {
+    if(!a.title){ showToast('Artifact '+(i+1)+' is missing a title',true); valid=false; }
+    if(a.url && !isValidUrl(a.url)){
+      showToast('Artifact "'+(a.title||i+1)+'": invalid URL — must start with https://',true);
+      // highlight the url input
+      const inputs = document.querySelectorAll('#ab-'+i+' input[type="url"]');
+      inputs.forEach(inp=>{ inp.classList.add('invalid'); setTimeout(()=>inp.classList.remove('invalid'),4000); });
+      valid=false;
+    }
+  });
+  return valid;
+}
+
 // ── FIREBASE SAVE ──
 async function fbSave(section,data){
   if(!db)throw new Error('Firebase not initialized');
@@ -953,6 +1191,10 @@ async function runSave(btnId,section,data){
 
 // ── INDIVIDUAL SAVERS ──
 async function saveHero(){
+  clearAllErrors();
+  const ok = validateRequired('h-line1','Headline Line 1') &
+              validateRequired('h-eyebrow','Eyebrow Text');
+  if(!ok){ showToast('Please fix the highlighted fields',true); return; }
   await runSave('save-hero','hero',{
     eyebrow:document.getElementById('h-eyebrow').value,
     line1:document.getElementById('h-line1').value,line2:document.getElementById('h-line2').value,line3:document.getElementById('h-line3').value,
@@ -971,10 +1213,20 @@ async function saveValueProps(){
   })));
 }
 async function saveTimeline(){await runSave('save-timeline','timeline',STATE.timeline);}
-async function saveArtifacts(){await runSave('save-artifacts','artifacts',STATE.artifacts);}
+async function saveArtifacts(){
+  if(!validateArtifacts()){ return; }
+  await runSave('save-artifacts','artifacts',STATE.artifacts);
+}
 async function saveCaseStudies(){await runSave('save-casestudies','casestudies',STATE.casestudies);}
 async function saveTestimonials(){await runSave('save-testimonials','testimonials',STATE.testimonials);}
 async function saveSettings(){
+  clearAllErrors();
+  const ok = validateRequired('s-email','Email') &
+              validateUrl('s-linkedin','LinkedIn URL') &
+              validateUrl('s-github','GitHub URL') &
+              validateUrl('s-calendly','Calendly URL') &
+              validateUrl('s-resume','Resume URL');
+  if(!ok){ showToast('Please fix the highlighted fields',true); return; }
   await runSave('save-settings','settings',{
     email:document.getElementById('s-email').value,linkedin:document.getElementById('s-linkedin').value,
     github:document.getElementById('s-github').value,calendly:document.getElementById('s-calendly').value,
@@ -982,6 +1234,10 @@ async function saveSettings(){
   });
 }
 async function saveNav(){
+  clearAllErrors();
+  const ok = validateRequired('nav-logo-name','Logo Name') &
+              validateUrl('nav-cta-url','Book a Call URL');
+  if(!ok){ showToast('Please fix the highlighted fields',true); return; }
   await runSave('save-nav','navsection',{
     logoName:document.getElementById('nav-logo-name').value,
     logoSpan:document.getElementById('nav-logo-span').value,
@@ -1068,6 +1324,8 @@ async function initAdmin(){
 // ── EXPOSE ──
 window.initAdmin=initAdmin;
 window.doLogin=doLogin;window.doLogout=doLogout;window.changePassword=changePassword;
+window.doGoogleLogin=doGoogleLogin;window.doEmailLogin=doEmailLogin;
+window.showEmailLogin=showEmailLogin;window.showGoogleLogin=showGoogleLogin;
 window.showPanel=showPanel;window.toggleAccordion=toggleAccordion;
 window.togglePreview=togglePreview;window.loadHistory=loadHistory;window.restoreVersion=restoreVersion;
 window.addArtifact=addArtifact;window.removeArtifact=removeArtifact;
