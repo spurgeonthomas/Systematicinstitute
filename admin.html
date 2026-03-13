@@ -317,7 +317,10 @@ html{font-size:16px}body{background:var(--cream);color:var(--ink);font-family:'I
       </div>
       <div class="save-bar">
         <span class="save-bar-info">Section: <span>Career Timeline</span></span>
-        <button class="btn btn-save" id="save-timeline" onclick="saveTimeline()">Save Changes</button>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn btn-add" onclick="addTimelineEntry()">+ Add Entry</button>
+          <button class="btn btn-save" id="save-timeline" onclick="saveTimeline()">Save Changes</button>
+        </div>
       </div>
       <div id="timeline-list"></div>
     </div>
@@ -957,21 +960,37 @@ function getTagsFromEditor(containerId){
 function renderTimeline(tl){
   const list=document.getElementById('timeline-list');if(!list)return;
   list.innerHTML=tl.map((t,i)=>`
-    <div class="accordion-item">
+    <div class="accordion-item" id="tl-item-${i}">
       <div class="accordion-header" onclick="toggleAccordion('tl-body-${i}','tl-chev-${i}')">
         <div class="accordion-header-left">
           <span class="accordion-index">${String(i+1).padStart(2,'0')}</span>
-          <div><div class="accordion-name">${t.role||'Role'}</div><div class="accordion-meta">${t.date||''} · ${t.company||''}</div></div>
+          <div>
+            <div class="accordion-name" id="tl-header-role-${i}">${t.role||'New Role'}</div>
+            <div class="accordion-meta" id="tl-header-meta-${i}">${t.date||''} · ${t.company||''}</div>
+          </div>
         </div>
-        <span class="accordion-chevron" id="tl-chev-${i}">▼</span>
+        <div class="accordion-actions">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();removeTimelineEntry(${i})">Remove</button>
+          <span class="accordion-chevron" id="tl-chev-${i}">▼</span>
+        </div>
       </div>
       <div class="accordion-body" id="tl-body-${i}">
         <div class="form-grid">
-          <div class="field"><label>Date Range</label><input type="text" value="${t.date||''}" onchange="STATE.timeline[${i}].date=this.value" placeholder="2021 – Present"/></div>
-          <div class="field"><label>Role / Title</label><input type="text" value="${t.role||''}" onchange="STATE.timeline[${i}].role=this.value"/></div>
-          <div class="field form-full"><label>Company · Industry</label><input type="text" value="${t.company||''}" onchange="STATE.timeline[${i}].company=this.value"/></div>
-          <div class="field form-full"><label>Description</label><textarea rows="3" onchange="STATE.timeline[${i}].desc=this.value">${t.desc||''}</textarea></div>
-          <div class="field form-full"><label>Highlight Tags <span class="field-hint">comma separated</span></label><input type="text" value="${t.highlights||''}" onchange="STATE.timeline[${i}].highlights=this.value"/></div>
+          <div class="field"><label>Date Range</label><input type="text" value="${t.date||''}" 
+            oninput="STATE.timeline[${i}].date=this.value;document.getElementById('tl-header-meta-${i}').textContent=this.value+' · '+(STATE.timeline[${i}].company||'')" 
+            placeholder="2021 – Present"/></div>
+          <div class="field"><label>Role / Title <span class="field-hint">updates header live</span></label><input type="text" value="${t.role||''}" 
+            oninput="STATE.timeline[${i}].role=this.value;document.getElementById('tl-header-role-${i}').textContent=this.value||'New Role'"
+            placeholder="Principal Business Systems Analyst"/></div>
+          <div class="field form-full"><label>Company · Industry</label><input type="text" value="${t.company||''}" 
+            oninput="STATE.timeline[${i}].company=this.value;document.getElementById('tl-header-meta-${i}').textContent=(STATE.timeline[${i}].date||'')+' · '+this.value"
+            placeholder="Company Name · Industry"/></div>
+          <div class="field form-full"><label>Description</label><textarea rows="3" 
+            oninput="STATE.timeline[${i}].desc=this.value">${t.desc||''}</textarea></div>
+          <div class="field form-full"><label>Highlight Tags <span class="field-hint">comma separated — e.g. 600+ Requirements,40% Reduction</span></label>
+            <input type="text" value="${t.highlights||''}" 
+            oninput="STATE.timeline[${i}].highlights=this.value"
+            placeholder="600+ Requirements,40% Process Reduction,$800K Cost Avoidance"/></div>
         </div>
       </div>
     </div>`).join('');
@@ -1213,6 +1232,19 @@ async function saveValueProps(){
   })));
 }
 async function saveTimeline(){await runSave('save-timeline','timeline',STATE.timeline);}
+function addTimelineEntry(){
+  STATE.timeline.unshift({date:'',role:'New Role',company:'',desc:'',highlights:''});
+  renderTimeline(STATE.timeline);
+  // Auto-open the first accordion
+  setTimeout(()=>toggleAccordion('tl-body-0','tl-chev-0'),100);
+  showToast('New entry added — fill in the details then click Save Changes');
+}
+function removeTimelineEntry(i){
+  if(STATE.timeline.length<=1){showToast('Must have at least one timeline entry',true);return;}
+  if(!confirm('Remove "'+( STATE.timeline[i].role||'this entry')+'"?'))return;
+  STATE.timeline.splice(i,1);
+  renderTimeline(STATE.timeline);
+}
 async function saveArtifacts(){
   if(!validateArtifacts()){ return; }
   await runSave('save-artifacts','artifacts',STATE.artifacts);
@@ -1334,6 +1366,7 @@ window.addService=addService;window.removeService=removeService;
 window.removeExpertiseCat=removeExpertiseCat;
 window.handleTagInput=handleTagInput;window.removeTag=removeTag;
 window.saveHero=saveHero;window.saveValueProps=saveValueProps;window.saveTimeline=saveTimeline;
+window.addTimelineEntry=addTimelineEntry;window.removeTimelineEntry=removeTimelineEntry;
 window.saveArtifacts=saveArtifacts;window.saveCaseStudies=saveCaseStudies;
 window.saveTestimonials=saveTestimonials;window.saveSettings=saveSettings;
 window.saveNav=saveNav;window.saveExpertise=saveExpertise;
