@@ -691,9 +691,11 @@ try {
   auth = firebase.auth();
   const el=document.getElementById('fb-status-sidebar');
   if(el){el.textContent='● Firebase Connected';el.style.color='#6fcf97';}
-  // Auto-login if already signed in
+  // Auto-login if already signed in from previous session
   auth.onAuthStateChanged(user => {
-    if(user && document.getElementById('login-screen')) {
+    const loginScreen = document.getElementById('login-screen');
+    const isVisible = loginScreen && !loginScreen.classList.contains('hidden');
+    if(user && isVisible && !adminInitialized) {
       onAuthSuccess(user);
     }
   });
@@ -1197,14 +1199,23 @@ async function runSave(btnId,section,data){
   const orig=btn.textContent;
   btn.textContent='Saving…';btn.disabled=true;
   try{
+    // Verify auth before saving
+    if(auth && !auth.currentUser){
+      throw new Error('Not signed in — please log in again');
+    }
     await fbSave(section,data);
     STATE[section]=data;
     btn.textContent='✓ Saved';btn.disabled=false;
     setTimeout(()=>btn.textContent=orig,2500);
-    showToast('✓ '+section+' saved — live site updated.');
+    showToast('✓ '+section+' saved to Firestore.');
+    console.log('✓ Saved section:',section,'data sample:',JSON.stringify(data).slice(0,100));
   }catch(e){
     btn.textContent=orig;btn.disabled=false;
-    showToast('Save failed: '+e.message,true);
+    const msg = e.code==='permission-denied'
+      ? 'Permission denied — check Firestore security rules or sign in again'
+      : e.message;
+    showToast('Save failed: '+msg,true);
+    console.error('Save error for',section,':',e.code, e.message);
   }
 }
 
@@ -1302,7 +1313,10 @@ function removeService(i){if(!confirm('Remove?'))return;STATE.services.splice(i,
 function removeExpertiseCat(i){if(!confirm('Remove this skill category?'))return;STATE.expertise.splice(i,1);renderExpertise(STATE.expertise);}
 
 // ── INIT ──
+let adminInitialized = false;
 async function initAdmin(){
+  if(adminInitialized) return;
+  adminInitialized = true;
   // Init RTEs
   [1,2,3].forEach(i=>initRTE('rte-vp'+i,'rte-vp'+i+'-tb'));
 
