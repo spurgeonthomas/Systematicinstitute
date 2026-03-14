@@ -1343,10 +1343,16 @@ async function initAdmin(){
       const snap=await db.collection('siteContent').doc(s).get();
       if(snap.exists()){
         const raw=snap.data();
-        STATE[s]=(raw&&raw.data!==undefined)?raw.data:raw;
+        const extracted=(raw&&raw.data!==undefined)?raw.data:raw;
+        STATE[s]=extracted;
         loaded++;
+        console.log('✓ Admin loaded',s,'from Firestore. Sample:',JSON.stringify(extracted).slice(0,80));
+      } else {
+        console.log('○ Admin: no Firestore data for',s,'— using DEFAULTS');
       }
-    }catch(e){console.warn('Load',s,e.message);}
+    }catch(e){
+      console.warn('✗ Admin load error for',s,':',e.message);
+    }
   }
 
   // Re-populate with Firestore data
