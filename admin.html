@@ -866,7 +866,7 @@ async function restoreVersion(docId, section) {
   if(!db) return;
   try {
     const snap = await db.collection('siteHistory').doc(docId).get();
-    if(!snap.exists()){showToast('Version not found',true);return;}
+    if(!snap.exists){showToast('Version not found',true);return;}
     const {data} = snap.data();
     await db.collection('siteContent').doc(section).set({data, updatedAt:new Date().toISOString()});
     STATE[section]=data;
@@ -1341,7 +1341,7 @@ async function initAdmin(){
   for(const s of allSections){
     try{
       const snap=await db.collection('siteContent').doc(s).get();
-      if(snap.exists()){
+      if(snap.exists){
         const raw=snap.data();
         const extracted=(raw&&raw.data!==undefined)?raw.data:raw;
         STATE[s]=extracted;
